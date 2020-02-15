@@ -1,6 +1,8 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <cstring>
+#include <cerrno>
 
 #pragma pack(push, 1) 
 struct Header {
@@ -23,7 +25,7 @@ int main() {
    fin.open("level.dat", std::ios::in | std::ios::binary);
 
    if (!fin.is_open()) {
-      std::cout << "Unable to open file\n";
+      std::cerr << "Error: " << std::strerror(errno) << "\n";
       return 1;
    }
 
