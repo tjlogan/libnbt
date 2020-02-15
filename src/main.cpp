@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstring>
 #include <cerrno>
+#include "tag.h"
 
 #pragma pack(push, 1) 
 struct Header {
@@ -10,14 +11,6 @@ struct Header {
    int size;
 };
 #pragma pack(pop)
-
-enum TagType {
-   TAG_END = 0x00,
-   TAG_BYTE = 0x01,
-   TAG_INT = 0x03,
-   TAG_STRING = 0x08,
-   TAG_COMPOUND = 0x0A
-};
 
 int main() {
    std::ifstream fin;
