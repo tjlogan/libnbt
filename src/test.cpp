@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
-#include "tag.h"
+#include "tag/base_tag.h"
 
 TEST(BaseTag, Name) { 
-    BaseTag tag = ByteTag("test");
-    ASSERT_EQ("test", tag.name());
+    BaseTag* tag = new ByteTag("test");
+    ASSERT_EQ("test", tag->name());
 }
  
 TEST(ByteTag, Type) {
-    BaseTag tag = ByteTag("test");
-    ASSERT_EQ(TAG_BYTE, tag.type());
+    BaseTag* tag = new ByteTag("test");
+    ASSERT_EQ(TAG_BYTE, tag->type());
 }
 
 TEST(ByteTag, Value) {
@@ -17,36 +17,43 @@ TEST(ByteTag, Value) {
     ASSERT_EQ('x', tag.value());
 }
 
-TEST(IntTag, Type) {
-    BaseTag tag = IntTag("test");
-    ASSERT_EQ(TAG_INT, tag.type());
+TEST(ByteTag, ToString) {
+    ByteTag tag = ByteTag("test");
+    tag.setValue('x');
+    ASSERT_EQ("BYTE (test): 0x78", tag.toString());
 }
 
-TEST(StringTag, Type) {
-    BaseTag tag = StringTag("test");
-    ASSERT_EQ(TAG_STRING, tag.type());
+TEST(ByteTag, ToString_Negative) {
+    ByteTag tag = ByteTag("test");
+    tag.setValue(-1);
+    ASSERT_EQ("BYTE (test): 0xff", tag.toString());
 }
 
-TEST(CompoundTag, Type) {
-    BaseTag tag = CompoundTag("test");
-    ASSERT_EQ(TAG_COMPOUND, tag.type());
-}
+// TEST(IntTag, Type) {
+//     BaseTag tag = IntTag("test");
+//     ASSERT_EQ(TAG_INT, tag.type());
+// }
 
-TEST(CompoundTag, Value) {
-    CompoundTag tag = CompoundTag("test");
-    ByteTag byteTag = ByteTag("byte");
-    byteTag.setValue('x');
-    tag.add(byteTag);
-    IntTag intTag = IntTag("int");
-    intTag.setValue(123456789);
-    tag.add(intTag);
-    std::vector<BaseTag> tags = tag.value();
+// TEST(StringTag, Type) {
+//     BaseTag tag = StringTag("test");
+//     ASSERT_EQ(TAG_STRING, tag.type());
+// }
 
-    ASSERT_EQ(tags[0].name(), "byte");
-    ASSERT_EQ(tags[1].name(), "int");
-}
+// TEST(CompoundTag, Type) {
+//     BaseTag tag = CompoundTag("test");
+//     ASSERT_EQ(TAG_COMPOUND, tag.type());
+// }
 
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+// TEST(CompoundTag, Value) {
+//     CompoundTag tag = CompoundTag("test");
+//     ByteTag byteTag = ByteTag("byte");
+//     byteTag.setValue('x');
+//     tag.add(byteTag);
+//     IntTag intTag = IntTag("int");
+//     intTag.setValue(123456789);
+//     tag.add(intTag);
+//     std::vector<BaseTag> tags = tag.value();
+
+//     ASSERT_EQ(tags[0].name(), "byte");
+//     ASSERT_EQ(tags[1].name(), "int");
+// }

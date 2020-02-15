@@ -4,4 +4,12 @@ if("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
    message(FATAL_ERROR "In-source builds are not allowed.")
 endif("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
 
-add_subdirectory(src)
+target_sources(runTests 
+   PRIVATE
+   ${CMAKE_CURRENT_LIST_DIR}/base_tag.cpp
+)
+
+target_sources(reader 
+   PRIVATE
+   ${CMAKE_CURRENT_LIST_DIR}/base_tag.cpp
+)

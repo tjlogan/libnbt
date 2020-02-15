@@ -3,7 +3,7 @@
 #include <fstream>
 #include <cstring>
 #include <cerrno>
-#include "tag.h"
+#include "tag/base_tag.h"
 
 #pragma pack(push, 1) 
 struct Header {
@@ -43,20 +43,20 @@ int main() {
                return 3;
             }
             break;
-         case TAG_BYTE:
-            std::cout << "TAG BYTE\n";
+         case TAG_BYTE: {
             fin.read(reinterpret_cast<char*>(&nameLength), 2);
-            std::cout << "Name Length: " << nameLength << "\n";
             if (nameLength > 0) {
                char* nameBuffer = new char[nameLength];
                fin.read(nameBuffer, nameLength);
                str.assign(nameBuffer, nameLength);
-               std::cout << "Name: " << str << "\n";
             }
+            ByteTag byteTag = ByteTag(str);
             char value;
             fin.read(&value, 1);
-            std::cout << "Value: 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (unsigned int)value) << std::dec << "\n";
+            byteTag.setValue(value);
+            std::cout << byteTag.toString() << "\n";
             break;
+         }
          case TAG_INT:
             std::cout << "TAG INT\n";
             fin.read(reinterpret_cast<char*>(&nameLength), 2);
