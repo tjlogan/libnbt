@@ -4,6 +4,8 @@
 #include <cstring>
 #include <cerrno>
 #include "tag/byte_tag.h"
+#include "tag/int_tag.h"
+#include "tag/compound_tag.h"
 
 #pragma pack(push, 1) 
 struct Header {
@@ -33,16 +35,19 @@ int main() {
       short nameLength;
       short stringLength;
       std::string str;
+      str.assign("");
       switch (tagType) {
-         case TAG_COMPOUND:
-            std::cout << "TAG COMPOUND\n";
+         case TAG_COMPOUND: {
             fin.read(reinterpret_cast<char*>(&nameLength), 2);
-            std::cout << "Name Length: " << nameLength << "\n";
             if (nameLength > 0) {
-               std::cout << "I can't handle this right now\n";
-               return 3;
+               char* nameBuffer = new char[nameLength];
+               fin.read(nameBuffer, nameLength);
+               str.assign(nameBuffer, nameLength);
             }
+            CompoundTag tag = CompoundTag(str);
+            std::cout << tag.toString() << "\n";
             break;
+         }
          case TAG_BYTE: {
             fin.read(reinterpret_cast<char*>(&nameLength), 2);
             if (nameLength > 0) {
@@ -57,15 +62,12 @@ int main() {
             std::cout << byteTag.toString() << "\n";
             break;
          }
-         case TAG_INT:
-            std::cout << "TAG INT\n";
+         case TAG_INT: {
             fin.read(reinterpret_cast<char*>(&nameLength), 2);
-            std::cout << "Name Length: " << nameLength << "\n";
             if (nameLength > 0) {
                char* nameBuffer = new char[nameLength];
                fin.read(nameBuffer, nameLength);
                str.assign(nameBuffer, nameLength);
-               std::cout << "Name: " << str << "\n";
             }
             fin.read(valueBuffer, 4);
             int4 = 0;
@@ -73,8 +75,11 @@ int main() {
             int4 = (int4 << 8) + valueBuffer[2];
             int4 = (int4 << 8) + valueBuffer[1];
             int4 = (int4 << 8) + valueBuffer[0];
-            std::cout << "Value: " << int4 << "\n";
+            IntTag intTag = IntTag(str);
+            intTag.setValue(int4);
+            std::cout << intTag.toString() << "\n";
             break;
+         }
          case TAG_STRING:
             std::cout << "TAG STRING\n";
             fin.read(reinterpret_cast<char*>(&nameLength), 2);

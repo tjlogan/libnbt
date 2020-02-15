@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include "tag/base_tag.h"
 #include "tag/byte_tag.h"
+#include "tag/int_tag.h"
+#include "tag/compound_tag.h"
 
 TEST(BaseTag, Name) { 
     BaseTag* tag = new ByteTag("test");
@@ -30,20 +32,49 @@ TEST(ByteTag, ToString_Negative) {
     ASSERT_EQ("BYTE (test): 0xff", tag.toString());
 }
 
-// TEST(IntTag, Type) {
-//     BaseTag tag = IntTag("test");
-//     ASSERT_EQ(TAG_INT, tag.type());
-// }
+TEST(IntTag, Type) {
+    BaseTag* tag = new IntTag("test");
+    ASSERT_EQ(TAG_INT, tag->type());
+}
+
+TEST(IntTag, Value) {
+    IntTag tag = IntTag("test");
+    tag.setValue(1025);
+    ASSERT_EQ(1025, tag.value());
+}
+
+TEST(IntTag, Value_Negative) {
+    IntTag tag = IntTag("test");
+    tag.setValue(-1025);
+    ASSERT_EQ(-1025, tag.value());
+}
+
+TEST(IntTag, ToString) {
+    IntTag tag = IntTag("test");
+    tag.setValue(1025);
+    ASSERT_EQ("INT (test): 1025", tag.toString());
+}
+
+TEST(IntTag, ToString_Negative) {
+    IntTag tag = IntTag("test");
+    tag.setValue(-1025);
+    ASSERT_EQ("INT (test): -1025", tag.toString());
+}
 
 // TEST(StringTag, Type) {
 //     BaseTag tag = StringTag("test");
 //     ASSERT_EQ(TAG_STRING, tag.type());
 // }
 
-// TEST(CompoundTag, Type) {
-//     BaseTag tag = CompoundTag("test");
-//     ASSERT_EQ(TAG_COMPOUND, tag.type());
-// }
+TEST(CompoundTag, Type) {
+    BaseTag* tag = new CompoundTag("test");
+    ASSERT_EQ(TAG_COMPOUND, tag->type());
+}
+
+TEST(CompoundTag, ToString) {
+    CompoundTag tag = CompoundTag("test");
+    ASSERT_EQ("COMPOUND (test)", tag.toString());
+}
 
 // TEST(CompoundTag, Value) {
 //     CompoundTag tag = CompoundTag("test");
