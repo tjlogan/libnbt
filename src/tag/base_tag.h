@@ -1,5 +1,5 @@
-#include <vector>
-#include <memory>
+#ifndef BASE_TAG
+#define BASE_TAG 
 
 enum TagType {
    TAG_END = 0x00,
@@ -19,17 +19,6 @@ class BaseTag {
       std::string name();
       TagType type();
       virtual std::string toString() = 0;
-};
-
-class ByteTag : public BaseTag {
-   private:
-      char m_value;
-   
-   public:
-      ByteTag(std::string name);
-      char value();
-      void setValue(char value);
-      std::string toString();
 };
 
 // class IntTag : public BaseTag {
@@ -60,3 +49,5 @@ class ByteTag : public BaseTag {
 //       void add(BaseTag tag);
 //       std::vector<BaseTag> value();
 // };
+
+#endif

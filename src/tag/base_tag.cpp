@@ -1,6 +1,4 @@
 #include <string>
-#include <sstream>
-#include <iomanip>
 #include "base_tag.h"
 
 BaseTag::BaseTag(std::string name, TagType type) : m_name(name), m_type(type) {}
@@ -13,18 +11,7 @@ TagType BaseTag::type() {
    return m_type;
 }
 
-ByteTag::ByteTag(std::string name) : BaseTag(name, TAG_BYTE) {}
-void ByteTag::setValue(char value) {
-   m_value = value;
-}
-char ByteTag::value() {
-   return m_value;
-}
-std::string ByteTag::toString() {
-   std::stringstream ss;
-   ss << "BYTE (" << m_name << "): 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (int)m_value);
-   return ss.str();
-}
+
 
 // IntTag::IntTag(std::string name) : BaseTag(name, TAG_INT) {}
 // void IntTag::setValue(int value) {

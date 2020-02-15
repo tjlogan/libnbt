@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "tag/base_tag.h"
+#include "tag/byte_tag.h"
 
 TEST(BaseTag, Name) { 
     BaseTag* tag = new ByteTag("test");

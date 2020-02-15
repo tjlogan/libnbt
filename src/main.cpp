@@ -3,7 +3,7 @@
 #include <fstream>
 #include <cstring>
 #include <cerrno>
-#include "tag/base_tag.h"
+#include "tag/byte_tag.h"
 
 #pragma pack(push, 1) 
 struct Header {
