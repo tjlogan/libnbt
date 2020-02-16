@@ -1,5 +1,5 @@
-#ifndef BASE_TAG
-#define BASE_TAG 
+#ifndef BASE_TAG_H
+#define BASE_TAG_H
 
 enum TagType {
    TAG_END = 0x00,

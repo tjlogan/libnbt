@@ -1,5 +1,5 @@
-#ifndef LONG_TAG
-#define LONG_TAG 
+#ifndef LONG_TAG_H
+#define LONG_TAG_H
 
 #include <string>
 #include "base_tag.h"

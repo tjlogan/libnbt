@@ -1,5 +1,5 @@
-#ifndef BYTE_TAG
-#define BYTE_TAG 
+#ifndef BYTE_TAG_H
+#define BYTE_TAG_H
 
 #include <string>
 #include "base_tag.h"

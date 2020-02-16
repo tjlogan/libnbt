@@ -1,5 +1,5 @@
-#ifndef LIST_TAG
-#define LIST_TAG 
+#ifndef LIST_TAG_H
+#define LIST_TAG_H
 
 #include <string>
 #include "base_tag.h"

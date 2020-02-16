@@ -1,5 +1,5 @@
-#ifndef STRING_TAG
-#define STRING_TAG 
+#ifndef STRING_TAG_H
+#define STRING_TAG_H
 
 #include <string>
 #include "base_tag.h"

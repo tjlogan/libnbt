@@ -1,5 +1,5 @@
-#ifndef COMPOUND_TAG
-#define COMPOUND_TAG 
+#ifndef COMPOUND_TAG_H
+#define COMPOUND_TAG_H
 
 #include <string>
 #include "base_tag.h"

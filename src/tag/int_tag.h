@@ -1,5 +1,5 @@
-#ifndef INT_TAG
-#define INT_TAG 
+#ifndef INT_TAG_H
+#define INT_TAG_H
 
 #include <string>
 #include "base_tag.h"
