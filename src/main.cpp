@@ -29,7 +29,6 @@ int main() {
    fin.read(buffer, 8);
    struct Header* header = (Header*)buffer;
    char* valueBuffer = new char[4];
-   int int4 = 0;
    while(!fin.eof()) {
       char tagType;
       fin.read(&tagType, 1);
@@ -72,7 +71,7 @@ int main() {
                str.assign(nameBuffer, nameLength);
             }
             fin.read(valueBuffer, 4);
-            int4 = 0;
+            int int4 = 0;
             int4 = valueBuffer[3];
             int4 = (int4 << 8) + valueBuffer[2];
             int4 = (int4 << 8) + valueBuffer[1];
@@ -108,7 +107,7 @@ int main() {
                fin.read(nameBuffer, nameLength);
                str.assign(nameBuffer, nameLength);
             }
-            fin.read(valueBuffer, 4);
+            fin.read(valueBuffer, 8);
             long int8 = 0;
             int8 = valueBuffer[7];
             int8 = (int8 << 8) + valueBuffer[6];
@@ -121,6 +120,10 @@ int main() {
             LongTag longTag = LongTag(str);
             longTag.setValue(int8);
             std::cout << longTag.toString() << "\n";
+            break;
+         }
+         case TAG_END: {
+            std::cout << "END\n";
             break;
          }
          default:
