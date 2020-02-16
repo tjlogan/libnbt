@@ -3,6 +3,7 @@
 #include "tag/byte_tag.h"
 #include "tag/int_tag.h"
 #include "tag/compound_tag.h"
+#include "tag/string_tag.h"
 
 TEST(BaseTag, Name) { 
     BaseTag* tag = new ByteTag("test");
@@ -61,10 +62,22 @@ TEST(IntTag, ToString_Negative) {
     ASSERT_EQ("INT (test): -1025", tag.toString());
 }
 
-// TEST(StringTag, Type) {
-//     BaseTag tag = StringTag("test");
-//     ASSERT_EQ(TAG_STRING, tag.type());
-// }
+TEST(StringTag, Type) {
+    BaseTag* tag = new StringTag("test");
+    ASSERT_EQ(TAG_STRING, tag->type());
+}
+
+TEST(StringTag, Value) {
+    StringTag tag = StringTag("test");
+    tag.setValue("my string value");
+    ASSERT_EQ("my string value", tag.value());
+}
+
+TEST(StringTag, ToString) {
+    StringTag tag = StringTag("test");
+    tag.setValue("testing");
+    ASSERT_EQ("STRING (test): testing", tag.toString());
+}
 
 TEST(CompoundTag, Type) {
     BaseTag* tag = new CompoundTag("test");

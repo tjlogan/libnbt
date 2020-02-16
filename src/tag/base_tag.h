@@ -21,33 +21,4 @@ class BaseTag {
       virtual std::string toString() = 0;
 };
 
-// class IntTag : public BaseTag {
-//    private:
-//       int m_value;
-   
-//    public:
-//       IntTag(std::string name);
-//       int value();
-//       void setValue(int value);
-// };
-
-// class StringTag : public BaseTag {
-//    private:
-//       std::string m_value;
-   
-//    public:
-//       StringTag(std::string name);
-//       std::string value();
-// };
-
-// class CompoundTag : public BaseTag {
-//    private:
-//       std::vector<BaseTag> m_value;
-   
-//    public:
-//       CompoundTag(std::string name);
-//       void add(BaseTag tag);
-//       std::vector<BaseTag> value();
-// };
-
 #endif

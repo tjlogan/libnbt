@@ -6,6 +6,7 @@
 #include "tag/byte_tag.h"
 #include "tag/int_tag.h"
 #include "tag/compound_tag.h"
+#include "tag/string_tag.h"
 
 #pragma pack(push, 1) 
 struct Header {
@@ -80,26 +81,25 @@ int main() {
             std::cout << intTag.toString() << "\n";
             break;
          }
-         case TAG_STRING:
-            std::cout << "TAG STRING\n";
+         case TAG_STRING: {
             fin.read(reinterpret_cast<char*>(&nameLength), 2);
-            std::cout << "Name Length: " << nameLength << "\n";
             if (nameLength > 0) {
                char* nameBuffer = new char[nameLength];
                fin.read(nameBuffer, nameLength);
                str.assign(nameBuffer, nameLength);
-               std::cout << "Name: " << str << "\n";
             }
+            std::string strValue;
             fin.read(reinterpret_cast<char*>(&stringLength), 2);
-            std::cout << "Name Length: " << stringLength << "\n";
             if (stringLength > 0) {
                char* stringBuffer = new char[stringLength];
                fin.read(stringBuffer, stringLength);
-               str.assign(stringBuffer, stringLength);
-               std::cout << "String: " << str << "\n";
+               strValue.assign(stringBuffer, stringLength);
             }
+            StringTag strTag = StringTag(str);
+            strTag.setValue(strValue);
+            std::cout << strTag.toString() << "\n";
             break;
-
+         }
          default:
             std::cout << "UNKNOWN TAG 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (unsigned int)tagType) << std::dec << "\n";
             return 2;
