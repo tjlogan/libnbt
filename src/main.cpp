@@ -18,7 +18,6 @@ int main() {
    Parser parser = Parser(fin);
    std::cout << "Version: " << parser.version() << "\n";
    std::cout << "NBT Size: " << parser.size() << "\n";
-   char* valueBuffer = new char[4];
    while(!fin.eof()) {
       char tagType;
       fin.read(&tagType, 1);
@@ -60,6 +59,7 @@ int main() {
                fin.read(nameBuffer, nameLength);
                str.assign(nameBuffer, nameLength);
             }
+            char* valueBuffer = new char[4];
             fin.read(valueBuffer, 4);
             int int4 = 0;
             int4 = valueBuffer[3];
@@ -97,6 +97,7 @@ int main() {
                fin.read(nameBuffer, nameLength);
                str.assign(nameBuffer, nameLength);
             }
+            char* valueBuffer = new char[4];
             fin.read(valueBuffer, 8);
             long int8 = 0;
             int8 = valueBuffer[7];
