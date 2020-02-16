@@ -14,7 +14,6 @@ struct Header {
 
 int main() {
    std::ifstream fin;
-   char* buffer = new char[8];
    fin.open("level.dat", std::ios::in | std::ios::binary);
 
    if (!fin.is_open()) {
@@ -22,6 +21,7 @@ int main() {
       return 1;
    }
 
+   char* buffer = new char[8];
    fin.read(buffer, 8);
    struct Header* header = (Header*)buffer;
    char* valueBuffer = new char[4];
