@@ -4,6 +4,7 @@
 #include "tag/int_tag.h"
 #include "tag/compound_tag.h"
 #include "tag/string_tag.h"
+#include "tag/long_tag.h"
 
 TEST(BaseTag, Name) { 
     BaseTag* tag = new ByteTag("test");
@@ -89,6 +90,34 @@ TEST(CompoundTag, ToString) {
     ASSERT_EQ("COMPOUND (test)", tag.toString());
 }
 
+TEST(LongTag, Type) {
+    BaseTag* tag = new LongTag("test");
+    ASSERT_EQ(TAG_LONG, tag->type());
+}
+
+TEST(LongTag, Value) {
+    LongTag tag = LongTag("test");
+    tag.setValue(4147483647);
+    ASSERT_EQ(4147483647, tag.value());
+}
+
+TEST(LongTag, Value_Negative) {
+    LongTag tag = LongTag("test");
+    tag.setValue(-4147483647);
+    ASSERT_EQ(-4147483647, tag.value());
+}
+
+TEST(LongTag, ToString) {
+    LongTag tag = LongTag("test");
+    tag.setValue(4147483647);
+    ASSERT_EQ("LONG (test): 4147483647", tag.toString());
+}
+
+TEST(LongTag, ToString_Negative) {
+    LongTag tag = LongTag("test");
+    tag.setValue(-4147483647);
+    ASSERT_EQ("LONG (test): -4147483647", tag.toString());
+}
 // TEST(CompoundTag, Value) {
 //     CompoundTag tag = CompoundTag("test");
 //     ByteTag byteTag = ByteTag("byte");

@@ -11,6 +11,7 @@ target_sources(runTests
    ${CMAKE_CURRENT_LIST_DIR}/int_tag.cpp
    ${CMAKE_CURRENT_LIST_DIR}/compound_tag.cpp
    ${CMAKE_CURRENT_LIST_DIR}/string_tag.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/long_tag.cpp
 )
 
 target_sources(reader 
@@ -20,4 +21,5 @@ target_sources(reader
    ${CMAKE_CURRENT_LIST_DIR}/int_tag.cpp
    ${CMAKE_CURRENT_LIST_DIR}/compound_tag.cpp
    ${CMAKE_CURRENT_LIST_DIR}/string_tag.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/long_tag.cpp
 )

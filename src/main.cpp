@@ -7,6 +7,7 @@
 #include "tag/int_tag.h"
 #include "tag/compound_tag.h"
 #include "tag/string_tag.h"
+#include "tag/long_tag.h"
 
 #pragma pack(push, 1) 
 struct Header {
@@ -98,6 +99,28 @@ int main() {
             StringTag strTag = StringTag(str);
             strTag.setValue(strValue);
             std::cout << strTag.toString() << "\n";
+            break;
+         }
+         case TAG_LONG: {
+            fin.read(reinterpret_cast<char*>(&nameLength), 2);
+            if (nameLength > 0) {
+               char* nameBuffer = new char[nameLength];
+               fin.read(nameBuffer, nameLength);
+               str.assign(nameBuffer, nameLength);
+            }
+            fin.read(valueBuffer, 4);
+            long int8 = 0;
+            int8 = valueBuffer[7];
+            int8 = (int8 << 8) + valueBuffer[6];
+            int8 = (int8 << 8) + valueBuffer[5];
+            int8 = (int8 << 8) + valueBuffer[4];
+            int8 = (int8 << 8) + valueBuffer[3];
+            int8 = (int8 << 8) + valueBuffer[2];
+            int8 = (int8 << 8) + valueBuffer[1];
+            int8 = (int8 << 8) + valueBuffer[0];
+            LongTag longTag = LongTag(str);
+            longTag.setValue(int8);
+            std::cout << longTag.toString() << "\n";
             break;
          }
          default:
