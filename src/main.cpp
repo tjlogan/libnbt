@@ -3,11 +3,7 @@
 #include <fstream>
 #include <cstring>
 #include <cerrno>
-#include "tag/byte_tag.h"
-#include "tag/int_tag.h"
-#include "tag/compound_tag.h"
-#include "tag/string_tag.h"
-#include "tag/long_tag.h"
+#include "tag/tag.h"
 
 #pragma pack(push, 1) 
 struct Header {
@@ -124,6 +120,17 @@ int main() {
          }
          case TAG_END: {
             std::cout << "END\n";
+            break;
+         }
+         case TAG_LIST: {
+            fin.read(reinterpret_cast<char*>(&nameLength), 2);
+            if (nameLength > 0) {
+               char* nameBuffer = new char[nameLength];
+               fin.read(nameBuffer, nameLength);
+               str.assign(nameBuffer, nameLength);
+            }
+            std::cout << "TAG LIST: " << str << "\n";
+            return 3;
             break;
          }
          default:

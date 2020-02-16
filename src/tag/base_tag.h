@@ -7,6 +7,7 @@ enum TagType {
    TAG_INT = 0x03,
    TAG_LONG = 0x04,
    TAG_STRING = 0x08,
+   TAG_LIST = 0x09,
    TAG_COMPOUND = 0x0A
 };
  

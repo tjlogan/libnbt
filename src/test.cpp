@@ -1,10 +1,5 @@
 #include <gtest/gtest.h>
-#include "tag/base_tag.h"
-#include "tag/byte_tag.h"
-#include "tag/int_tag.h"
-#include "tag/compound_tag.h"
-#include "tag/string_tag.h"
-#include "tag/long_tag.h"
+#include "tag/tag.h"
 
 TEST(BaseTag, Name) { 
     BaseTag* tag = new ByteTag("test");
@@ -117,6 +112,11 @@ TEST(LongTag, ToString_Negative) {
     LongTag tag = LongTag("test");
     tag.setValue(-4147483647);
     ASSERT_EQ("LONG (test): -4147483647", tag.toString());
+}
+
+TEST(ListTag, Type) {
+    BaseTag* tag = new ListTag("test");
+    ASSERT_EQ(TAG_LIST, tag->type());
 }
 // TEST(CompoundTag, Value) {
 //     CompoundTag tag = CompoundTag("test");
