@@ -4,13 +4,7 @@
 #include <cstring>
 #include <cerrno>
 #include "tag/tag.h"
-
-#pragma pack(push, 1) 
-struct Header {
-   int version;
-   int size;
-};
-#pragma pack(pop)
+#include "parser/parser.h"
 
 int main() {
    std::ifstream fin;
@@ -21,9 +15,9 @@ int main() {
       return 1;
    }
 
-   char* buffer = new char[8];
-   fin.read(buffer, 8);
-   struct Header* header = (Header*)buffer;
+   Parser parser = Parser(fin);
+   std::cout << "Version: " << parser.version() << "\n";
+   std::cout << "NBT Size: " << parser.size() << "\n";
    char* valueBuffer = new char[4];
    while(!fin.eof()) {
       char tagType;
@@ -130,6 +124,7 @@ int main() {
                str.assign(nameBuffer, nameLength);
             }
             std::cout << "TAG LIST: " << str << "\n";
+            std::cerr << "Cannot parse LISTs yet\n";
             return 3;
             break;
          }
