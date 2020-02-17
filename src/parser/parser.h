@@ -30,4 +30,16 @@ class Parser {
       std::vector<BaseTag*> parse();
 };
 
+namespace ParserHelper {
+   template <typename T>
+   T read(std::istream& is) {
+      std::unique_ptr<char[]> valueBuffer(new char[sizeof(T)]);
+      is.read(valueBuffer.get(), sizeof(T));
+      T value = valueBuffer[sizeof(T) - 1];
+      for(int i = (int)sizeof(T) - 2; i >= 0; i--) {
+         value = (value << 8) + valueBuffer[i];
+      }
+      return value;
+   };
+}
 #endif

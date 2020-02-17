@@ -25,8 +25,7 @@ std::vector<BaseTag*> Parser::parse() {
       switch (tagBuffer) {
       case TAG_BYTE: {
          name = readName();
-         char value;
-         m_is.read(&value, 1);
+         char value = ParserHelper::read<char>(m_is);
          ByteTag* byteTag = new ByteTag(name);
          byteTag->setValue(value);
          m_root.push_back(byteTag);
@@ -34,7 +33,7 @@ std::vector<BaseTag*> Parser::parse() {
       }
       case TAG_INT: {
          name = readName();
-         int value = readInt();
+         int value = ParserHelper::read<int>(m_is);
          IntTag* intTag = new IntTag(name);
          intTag->setValue(value);
          m_root.push_back(intTag);
@@ -42,7 +41,7 @@ std::vector<BaseTag*> Parser::parse() {
       }
       case TAG_LONG: {
          name = readName();
-         long value = readLong();
+         long value = ParserHelper::read<long>(m_is);
          LongTag* longTag = new LongTag(name);
          longTag->setValue(value);
          m_root.push_back(longTag);
@@ -67,30 +66,4 @@ std::string Parser::readName() {
       return name.assign(nameBuffer.get(), nameLength);
    }
    return name;
-}
-
-int Parser::readInt() {
-   std::unique_ptr<char[]> valueBuffer(new char[4]);
-   m_is.read(valueBuffer.get(), 4);
-   int int4 = 0;
-   int4 = valueBuffer[3];
-   int4 = (int4 << 8) + valueBuffer[2];
-   int4 = (int4 << 8) + valueBuffer[1];
-   int4 = (int4 << 8) + valueBuffer[0];
-   return int4;
-}
-
-long Parser::readLong() {
-   std::unique_ptr<char[]> valueBuffer(new char[8]);
-   m_is.read(valueBuffer.get(), 8);
-   long int8 = 0;
-   int8 = valueBuffer[7];
-   int8 = (int8 << 8) + valueBuffer[6];
-   int8 = (int8 << 8) + valueBuffer[5];
-   int8 = (int8 << 8) + valueBuffer[4];
-   int8 = (int8 << 8) + valueBuffer[3];
-   int8 = (int8 << 8) + valueBuffer[2];
-   int8 = (int8 << 8) + valueBuffer[1];
-   int8 = (int8 << 8) + valueBuffer[0];
-   return int8;
 }
