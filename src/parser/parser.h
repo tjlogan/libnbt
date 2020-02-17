@@ -19,6 +19,10 @@ class Parser {
       unsigned int m_size;
       std::vector<BaseTag*> m_root;
 
+      std::string readName();
+      int readInt();
+      long readLong();
+
    public:
       Parser(std::istream& is);
       unsigned int version();
