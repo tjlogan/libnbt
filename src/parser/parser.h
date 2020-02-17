@@ -3,6 +3,7 @@
 
 #include <istream>
 #include <vector>
+#include <memory>
 #include "../tag/tag.h"
 
 #pragma pack(push, 1) 
@@ -17,7 +18,7 @@ class Parser {
       std::istream& m_is;
       unsigned int m_version;
       unsigned int m_size;
-      std::vector<BaseTag*> m_root;
+      std::vector<std::shared_ptr<BaseTag> > m_root;
 
       std::string readName();
       int readInt();
@@ -27,7 +28,7 @@ class Parser {
       Parser(std::istream& is);
       unsigned int version();
       unsigned int size();
-      std::vector<BaseTag*> parse();
+      std::vector<std::shared_ptr<BaseTag> > parse();
 };
 
 namespace ParserHelper {

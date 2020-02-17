@@ -25,7 +25,7 @@ TEST(ParserTests, ShouldReturnEmptyIfNoTags) {
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
    Parser parser = Parser(iss);
-   std::vector<BaseTag*> tags = parser.parse();
+   std::vector<std::shared_ptr<BaseTag> > tags = parser.parse();
    ASSERT_EQ(0, tags.size());
 }
 
@@ -37,7 +37,7 @@ TEST(ParserTests, CanParseByteTag) {
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
    Parser parser = Parser(iss);
-   std::vector<BaseTag*> tags = parser.parse();
+   std::vector<std::shared_ptr<BaseTag> > tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("BYTE (Test): 0xaa", tags[0]->toString());
 }
@@ -51,7 +51,7 @@ TEST(ParserTests, CanParseIntTag) {
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
    Parser parser = Parser(iss);
-   std::vector<BaseTag*> tags = parser.parse();
+   std::vector<std::shared_ptr<BaseTag> > tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("INT (Test.): 16909060", tags[0]->toString());
 }
@@ -66,7 +66,7 @@ TEST(ParserTests, CanParseLongTag) {
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
    Parser parser = Parser(iss);
-   std::vector<BaseTag*> tags = parser.parse();
+   std::vector<std::shared_ptr<BaseTag> > tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("LONG (Test.): 72623859790382856", tags[0]->toString());
 }

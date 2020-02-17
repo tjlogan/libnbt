@@ -18,7 +18,7 @@ unsigned int Parser::size() {
    return m_size;
 };
 
-std::vector<BaseTag*> Parser::parse() {
+std::vector<std::shared_ptr<BaseTag> > Parser::parse() {
    char tagBuffer;
    std::string name;
    while(m_is.read(&tagBuffer, 1)) {
@@ -26,7 +26,7 @@ std::vector<BaseTag*> Parser::parse() {
       case TAG_BYTE: {
          name = readName();
          char value = ParserHelper::read<char>(m_is);
-         ByteTag* byteTag = new ByteTag(name);
+         std::shared_ptr<ByteTag> byteTag = std::make_shared<ByteTag>(name);
          byteTag->setValue(value);
          m_root.push_back(byteTag);
          break;
@@ -34,7 +34,7 @@ std::vector<BaseTag*> Parser::parse() {
       case TAG_INT: {
          name = readName();
          int value = ParserHelper::read<int>(m_is);
-         IntTag* intTag = new IntTag(name);
+         std::shared_ptr<IntTag> intTag = std::make_shared<IntTag>(name);
          intTag->setValue(value);
          m_root.push_back(intTag);
          break;
@@ -42,7 +42,7 @@ std::vector<BaseTag*> Parser::parse() {
       case TAG_LONG: {
          name = readName();
          long value = ParserHelper::read<long>(m_is);
-         LongTag* longTag = new LongTag(name);
+         std::shared_ptr<LongTag> longTag = std::make_shared<LongTag>(name);
          longTag->setValue(value);
          m_root.push_back(longTag);
          break;
