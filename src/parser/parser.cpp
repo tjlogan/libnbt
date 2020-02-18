@@ -47,6 +47,14 @@ std::vector<std::shared_ptr<BaseTag> > Parser::parse() {
          m_root.push_back(longTag);
          break;
       }
+      case TAG_STRING: {
+         name = readName();
+         std::string value = readName();
+         std::shared_ptr<StringTag> stringTag = std::make_shared<StringTag>(name);
+         stringTag->setValue(value);
+         m_root.push_back(stringTag);
+         break;
+      }
       default:
          goto end_loop;
          break;

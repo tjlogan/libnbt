@@ -70,3 +70,17 @@ TEST(ParserTests, CanParseLongTag) {
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("LONG (Test.): 72623859790382856", tags[0]->toString());
 }
+
+TEST(ParserTests, CanParseString) {
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x08', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x06', '\x00',   'S',    't',    'r',    'i',    'n',    'g'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag> > tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("STRING (Test.): String", tags[0]->toString());
+}
