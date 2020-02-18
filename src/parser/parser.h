@@ -20,7 +20,7 @@ class Parser {
       unsigned int m_size;
       std::vector<std::shared_ptr<BaseTag> > m_root;
 
-      std::string readName();
+      std::string readString();
       int readInt();
       long readLong();
 
