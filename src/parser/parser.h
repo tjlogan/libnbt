@@ -18,7 +18,7 @@ class Parser {
       std::istream& m_is;
       unsigned int m_version;
       unsigned int m_size;
-      std::vector<std::shared_ptr<BaseTag> > m_root;
+      std::vector<std::shared_ptr<BaseTag>> m_root;
 
       std::string readString();
       int readInt();
@@ -28,7 +28,7 @@ class Parser {
       Parser(std::istream& is);
       unsigned int version();
       unsigned int size();
-      std::vector<std::shared_ptr<BaseTag> > parse();
+      std::vector<std::shared_ptr<BaseTag>> parse();
 };
 
 namespace ParserHelper {

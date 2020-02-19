@@ -18,9 +18,10 @@ unsigned int Parser::size() {
    return m_size;
 };
 
-std::vector<std::shared_ptr<BaseTag> > Parser::parse() {
+std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
    char tagBuffer;
    std::string name;
+
    while(m_is.read(&tagBuffer, 1)) {
       switch (tagBuffer) {
       case TAG_BYTE: {
@@ -53,6 +54,13 @@ std::vector<std::shared_ptr<BaseTag> > Parser::parse() {
          std::shared_ptr<StringTag> stringTag = std::make_shared<StringTag>(name);
          stringTag->setValue(value);
          m_root.push_back(stringTag);
+         break;
+      }
+      case TAG_COMPOUND: {
+         name = readString();
+         std::string value = readString();
+         std::shared_ptr<CompoundTag> compoundTag = std::make_shared<CompoundTag>(name);
+         m_root.push_back(compoundTag);
          break;
       }
       default:

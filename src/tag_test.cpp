@@ -80,9 +80,38 @@ TEST(CompoundTag, Type) {
     ASSERT_EQ(TAG_COMPOUND, tag->type());
 }
 
-TEST(CompoundTag, ToString) {
+TEST(CompoundTag, EmptyToString) {
     CompoundTag tag = CompoundTag("test");
-    ASSERT_EQ("COMPOUND (test)", tag.toString());
+    ASSERT_EQ("COMPOUND (test): [0]", tag.toString());
+}
+
+TEST(CompoundTag, WithOneChild) {
+    CompoundTag tag = CompoundTag("test");
+    std::shared_ptr<ByteTag> byteTag = std::make_shared<ByteTag>("byte");
+    byteTag->setValue('a');
+    tag.children.push_back(byteTag);
+    ASSERT_EQ("COMPOUND (test): [1]\nBYTE (byte): 0x61", tag.toString());
+}
+
+TEST(CompoundTag, WithMultipleChildren) {
+    CompoundTag tag = CompoundTag("test");
+    std::shared_ptr<ByteTag> byteTag = std::make_shared<ByteTag>("byte");
+    byteTag->setValue('a');
+    std::shared_ptr<IntTag> intTag = std::make_shared<IntTag>("int");
+    intTag->setValue(1);
+    tag.children.push_back(byteTag);
+    tag.children.push_back(intTag);
+    ASSERT_EQ("COMPOUND (test): [2]\nBYTE (byte): 0x61\nINT (int): 1", tag.toString());
+}
+
+TEST(CompoundTag, WithNestedCompoundTags) {
+    CompoundTag tag = CompoundTag("test");
+    std::shared_ptr<CompoundTag> nestedTag = std::make_shared<CompoundTag>("nested");
+    std::shared_ptr<ByteTag> byteTag = std::make_shared<ByteTag>("byte");
+    byteTag->setValue('a');
+    nestedTag->children.push_back(byteTag);
+    tag.children.push_back(nestedTag);
+    ASSERT_EQ("COMPOUND (test): [1]\nCOMPOUND (nested): [1]\nBYTE (byte): 0x61", tag.toString());
 }
 
 TEST(LongTag, Type) {
@@ -118,16 +147,3 @@ TEST(ListTag, Type) {
     BaseTag* tag = new ListTag("test");
     ASSERT_EQ(TAG_LIST, tag->type());
 }
-// TEST(CompoundTag, Value) {
-//     CompoundTag tag = CompoundTag("test");
-//     ByteTag byteTag = ByteTag("byte");
-//     byteTag.setValue('x');
-//     tag.add(byteTag);
-//     IntTag intTag = IntTag("int");
-//     intTag.setValue(123456789);
-//     tag.add(intTag);
-//     std::vector<BaseTag> tags = tag.value();
-
-//     ASSERT_EQ(tags[0].name(), "byte");
-//     ASSERT_EQ(tags[1].name(), "int");
-// }

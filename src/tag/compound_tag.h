@@ -2,16 +2,14 @@
 #define COMPOUND_TAG_H
 
 #include <string>
+#include <memory>
+#include <vector>
 #include "base_tag.h"
 
 class CompoundTag : public BaseTag {
-   private:
-      int m_value; // TODO: leaving value alone for now
-   
    public:
+      std::vector<std::shared_ptr<BaseTag>> children;
       CompoundTag(std::string name);
-      int value();
-      void setValue(int value);
       std::string toString();
 };
 

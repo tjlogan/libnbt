@@ -25,7 +25,7 @@ TEST(ParserTests, ShouldReturnEmptyIfNoTags) {
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
    Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag> > tags = parser.parse();
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
    ASSERT_EQ(0, tags.size());
 }
 
@@ -37,7 +37,7 @@ TEST(ParserTests, CanParseByteTag) {
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
    Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag> > tags = parser.parse();
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("BYTE (Test): 0xaa", tags[0]->toString());
 }
@@ -51,7 +51,7 @@ TEST(ParserTests, CanParseIntTag) {
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
    Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag> > tags = parser.parse();
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("INT (Test.): 16909060", tags[0]->toString());
 }
@@ -66,7 +66,7 @@ TEST(ParserTests, CanParseLongTag) {
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
    Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag> > tags = parser.parse();
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("LONG (Test.): 72623859790382856", tags[0]->toString());
 }
@@ -80,7 +80,47 @@ TEST(ParserTests, CanParseString) {
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
    Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag> > tags = parser.parse();
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("STRING (Test.): String", tags[0]->toString());
+}
+
+TEST(ParserTests, CanParseEmptyCompound) {
+   // Compound Tag immediately followed by an End Tag
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x0A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\x00'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("COMPOUND (Test): [0]", tags[0]->toString());
+}
+
+TEST(ParserTests, CanParseCompoundWithMultipleTags) {
+   // Compound Tag with an Int and String Tag followed by an End Tag
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '.',
+      '\x01', '\x02', '\x03', '\x04', '\x06', '\x01', '\x00',   'S',
+      '\x05', '\x00',   'H',    'e',    'l',    'l',    'o',  '\x00'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("COMPOUND (Test): [2]\nINT (.INT.) 67305985\nSTRING (S): Hello\n‬", tags[0]->toString());
+}
+
+TEST(ParserTests, CanParseNestedCompound) {
+   // Compound Tag with a Compound Tag with an Int Tag followed by End Tags
+}
+
+TEST(ParserTests, WillThrowErrorIfCompoundTagIsNotEnded) {
+   // Compound Tag with no End Tag
+   // TODO: Really throw an error?  Or close and set and error flag?
 }
