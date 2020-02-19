@@ -1,4 +1,6 @@
 #include <memory>
+#include <iostream>
+#include <iomanip>
 #include "parser.h"
 #include "../tag/tag.h"
 
@@ -21,6 +23,8 @@ unsigned int Parser::size() {
 std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
    char tagBuffer;
    std::string name;
+   std::vector<std::vector<std::shared_ptr<BaseTag>>*> tagStack;
+   std::vector<std::shared_ptr<BaseTag>>* currentCollection = &m_root;
 
    while(m_is.read(&tagBuffer, 1)) {
       switch (tagBuffer) {
@@ -29,7 +33,7 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          char value = ParserHelper::read<char>(m_is);
          std::shared_ptr<ByteTag> byteTag = std::make_shared<ByteTag>(name);
          byteTag->setValue(value);
-         m_root.push_back(byteTag);
+         currentCollection->push_back(byteTag);
          break;
       }
       case TAG_INT: {
@@ -37,7 +41,7 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          int value = ParserHelper::read<int>(m_is);
          std::shared_ptr<IntTag> intTag = std::make_shared<IntTag>(name);
          intTag->setValue(value);
-         m_root.push_back(intTag);
+         currentCollection->push_back(intTag);
          break;
       }
       case TAG_LONG: {
@@ -45,7 +49,7 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          long value = ParserHelper::read<long>(m_is);
          std::shared_ptr<LongTag> longTag = std::make_shared<LongTag>(name);
          longTag->setValue(value);
-         m_root.push_back(longTag);
+         currentCollection->push_back(longTag);
          break;
       }
       case TAG_STRING: {
@@ -53,17 +57,24 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          std::string value = readString();
          std::shared_ptr<StringTag> stringTag = std::make_shared<StringTag>(name);
          stringTag->setValue(value);
-         m_root.push_back(stringTag);
+         currentCollection->push_back(stringTag);
          break;
       }
       case TAG_COMPOUND: {
          name = readString();
-         std::string value = readString();
          std::shared_ptr<CompoundTag> compoundTag = std::make_shared<CompoundTag>(name);
-         m_root.push_back(compoundTag);
+         currentCollection->push_back(compoundTag);
+         tagStack.push_back(currentCollection);
+         currentCollection = &(compoundTag->children);
+         break;
+      }
+      case TAG_END: {
+         currentCollection = tagStack.back();
+         tagStack.pop_back();
          break;
       }
       default:
+         std::cerr << "Unknown tag encountered while parsing: 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (int)tagBuffer) << "\n";
          goto end_loop;
          break;
       }

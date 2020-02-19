@@ -105,7 +105,7 @@ TEST(ParserTests, CanParseCompoundWithMultipleTags) {
       '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '.',
-      '\x01', '\x02', '\x03', '\x04', '\x06', '\x01', '\x00',   'S',
+      '\x01', '\x02', '\x03', '\x04', '\x08', '\x01', '\x00',   'S',
       '\x05', '\x00',   'H',    'e',    'l',    'l',    'o',  '\x00'
    };
    std::string str(binary, sizeof(binary));
@@ -113,11 +113,41 @@ TEST(ParserTests, CanParseCompoundWithMultipleTags) {
    Parser parser = Parser(iss);
    std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
-   ASSERT_EQ("COMPOUND (Test): [2]\nINT (.INT.) 67305985\nSTRING (S): Hello\n‬", tags[0]->toString());
+   ASSERT_EQ("COMPOUND (Test.): [2]\nINT (.INT.): 67305985\nSTRING (S): Hello", tags[0]->toString());
 }
 
 TEST(ParserTests, CanParseNestedCompound) {
    // Compound Tag with a Compound Tag with an Int Tag followed by End Tags
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x0A', '\x05', '\x00',   'N',    'E',    'S',    'T',    '.',
+      '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '.',
+      '\x01', '\x02', '\x03', '\x04', '\x00'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("COMPOUND (Test.): [1]\nCOMPOUND (NEST.): [1]\nINT (.INT.): 67305985", tags[0]->toString());
+}
+
+TEST(ParserTests, CanParseCompoundWithChildAndSibling) {
+   // Compound Tag with a Byte Tag followed by an End Tag and Int Tag
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x01', '\x03', '\x00',   'B',    'Y',    'T',  '\xFF', '\x00',
+      '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '.',
+      '\x01', '\x02', '\x03', '\x04'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(2, tags.size());
+   ASSERT_EQ("COMPOUND (Test.): [1]\nBYTE (BYT): 0xff\nINT (.INT.): 67305985", tags[0]->toString());
 }
 
 TEST(ParserTests, WillThrowErrorIfCompoundTagIsNotEnded) {
