@@ -123,7 +123,7 @@ TEST(ParserTests, CanParseNestedCompound) {
       '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x0A', '\x05', '\x00',   'N',    'E',    'S',    'T',    '.',
       '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '.',
-      '\x01', '\x02', '\x03', '\x04', '\x00'
+      '\x01', '\x02', '\x03', '\x04', '\x00', '\x00'
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
@@ -147,7 +147,8 @@ TEST(ParserTests, CanParseCompoundWithChildAndSibling) {
    Parser parser = Parser(iss);
    std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
    ASSERT_EQ(2, tags.size());
-   ASSERT_EQ("COMPOUND (Test.): [1]\nBYTE (BYT): 0xff\nINT (.INT.): 67305985", tags[0]->toString());
+   ASSERT_EQ("COMPOUND (Test.): [1]\nBYTE (BYT): 0xff", tags[0]->toString());
+   ASSERT_EQ("INT (.INT.): 67305985", tags[1]->toString());
 }
 
 TEST(ParserTests, WillThrowErrorIfCompoundTagIsNotEnded) {
