@@ -27,9 +27,11 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
    std::vector<std::shared_ptr<BaseTag>>* currentCollection = &m_root;
 
    while(m_is.read(&tagBuffer, 1)) {
+      if (tagBuffer != TAG_END) {
+         name = readString();
+      }
       switch (tagBuffer) {
       case TAG_BYTE: {
-         name = readString();
          char value = ParserHelper::read<char>(m_is);
          std::shared_ptr<ByteTag> byteTag = std::make_shared<ByteTag>(name);
          byteTag->setValue(value);
@@ -37,7 +39,6 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          break;
       }
       case TAG_INT: {
-         name = readString();
          int value = ParserHelper::read<int>(m_is);
          std::shared_ptr<IntTag> intTag = std::make_shared<IntTag>(name);
          intTag->setValue(value);
@@ -45,7 +46,6 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          break;
       }
       case TAG_LONG: {
-         name = readString();
          long value = ParserHelper::read<long>(m_is);
          std::shared_ptr<LongTag> longTag = std::make_shared<LongTag>(name);
          longTag->setValue(value);
@@ -53,7 +53,6 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          break;
       }
       case TAG_STRING: {
-         name = readString();
          std::string value = readString();
          std::shared_ptr<StringTag> stringTag = std::make_shared<StringTag>(name);
          stringTag->setValue(value);
@@ -61,7 +60,6 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          break;
       }
       case TAG_COMPOUND: {
-         name = readString();
          std::shared_ptr<CompoundTag> compoundTag = std::make_shared<CompoundTag>(name);
          currentCollection->push_back(compoundTag);
          tagStack.push_back(currentCollection);
