@@ -32,17 +32,11 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
       }
       switch (tagBuffer) {
       case TAG_BYTE: {
-         char value = ParserHelper::read<char>(m_is);
-         std::shared_ptr<ByteTag> byteTag = std::make_shared<ByteTag>(name);
-         byteTag->setValue(value);
-         currentCollection->push_back(byteTag);
+         currentCollection->push_back(readByteTag(name));
          break;
       }
       case TAG_INT: {
-         int value = ParserHelper::read<int>(m_is);
-         std::shared_ptr<IntTag> intTag = std::make_shared<IntTag>(name);
-         intTag->setValue(value);
-         currentCollection->push_back(intTag);
+         currentCollection->push_back(readIntTag(name));
          break;
       }
       case TAG_LONG: {
@@ -64,6 +58,30 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          currentCollection->push_back(compoundTag);
          tagStack.push_back(currentCollection);
          currentCollection = &(compoundTag->children);
+         break;
+      }
+      case TAG_LIST: {
+         TagType childType = (TagType)ParserHelper::read<char>(m_is);
+         int size = ParserHelper::read<int>(m_is);
+         std::shared_ptr<ListTag> listTag = std::make_shared<ListTag>(name, childType);
+         std::shared_ptr<BaseTag> childTag;
+         for(int i = 0; i < size; i++) {
+            switch (childType) {
+            case TAG_BYTE: {
+               childTag = readByteTag("");
+               break;
+            }
+            case TAG_INT: {
+               childTag = readIntTag("");
+               break;
+            }
+            default:
+               std::cerr << "Unhandled child type encountered while parsing list: 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (int)childType) << "\n";
+               break;
+            }
+            listTag->children.push_back(childTag);
+         }
+         currentCollection->push_back(listTag);
          break;
       }
       case TAG_END: {
@@ -91,4 +109,18 @@ std::string Parser::readString() {
       return name.assign(nameBuffer.get(), nameLength);
    }
    return name;
+}
+
+std::shared_ptr<ByteTag> Parser::readByteTag(std::string name) {
+   char value = ParserHelper::read<char>(m_is);
+   std::shared_ptr<ByteTag> byteTag = std::make_shared<ByteTag>(name);
+   byteTag->setValue(value);
+   return byteTag;
+}
+
+std::shared_ptr<IntTag> Parser::readIntTag(std::string name) {
+   int value = ParserHelper::read<int>(m_is);
+   std::shared_ptr<IntTag> intTag = std::make_shared<IntTag>(name);
+   intTag->setValue(value);
+   return intTag;
 }

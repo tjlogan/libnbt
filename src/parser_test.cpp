@@ -56,7 +56,6 @@ TEST(ParserTests, CanParseIntTag) {
    ASSERT_EQ("INT (Test.): 16909060", tags[0]->toString());
 }
 
-
 TEST(ParserTests, CanParseLongTag) {
    const char binary[] = {
       '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
@@ -151,7 +150,32 @@ TEST(ParserTests, CanParseCompoundWithChildAndSibling) {
    ASSERT_EQ("INT (.INT.): 67305985", tags[1]->toString());
 }
 
-TEST(ParserTests, WillThrowErrorIfCompoundTagIsNotEnded) {
-   // Compound Tag with no End Tag
-   // TODO: Really throw an error?  Or close and set and error flag?
+TEST(ParserTest, CanParseListofBytes) {
+   // List tag of 3 Bytes 
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x01', '\x03', '\x00', '\x00', '\x00', '\x01', '\x02', '\x03',
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("LIST (LIST.): [3]\nBYTE (): 0x01\nBYTE (): 0x02\nBYTE (): 0x03", tags[0]->toString());
+}
+
+TEST(ParserTest, CanParseListOfInts) {
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x03', '\x02', '\x00', '\x00', '\x00', '\x64', '\x00', '\x00',
+      '\x00', '\xC8', '\x00', '\x00', '\x00'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("LIST (LIST.): [2]\nINT (): 100\nINT (): 200", tags[0]->toString());
 }

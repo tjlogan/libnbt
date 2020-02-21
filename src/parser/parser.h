@@ -21,8 +21,8 @@ class Parser {
       std::vector<std::shared_ptr<BaseTag>> m_root;
 
       std::string readString();
-      int readInt();
-      long readLong();
+      std::shared_ptr<ByteTag> readByteTag(std::string name);
+      std::shared_ptr<IntTag> readIntTag(std::string name);
 
    public:
       Parser(std::istream& is);
@@ -38,7 +38,7 @@ namespace ParserHelper {
       is.read(valueBuffer.get(), sizeof(T));
       T value = valueBuffer[sizeof(T) - 1];
       for(int i = (int)sizeof(T) - 2; i >= 0; i--) {
-         value = (value << 8) + valueBuffer[i];
+         value = (value << 8) + (unsigned char)valueBuffer[i];
       }
       return value;
    };

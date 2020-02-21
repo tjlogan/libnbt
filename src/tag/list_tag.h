@@ -2,16 +2,20 @@
 #define LIST_TAG_H
 
 #include <string>
+#include <vector>
+#include <memory>
 #include "base_tag.h"
 
 class ListTag : public BaseTag {
    private:
-      int m_value;
+      TagType m_childType;
    
    public:
-      ListTag(std::string name);
-      int value();
-      void setValue(int value);
+      std::vector<std::shared_ptr<BaseTag>> children;
+
+      ListTag(std::string name, TagType childType);
+      TagType childType();
+      int size();
       std::string toString();
 };
 

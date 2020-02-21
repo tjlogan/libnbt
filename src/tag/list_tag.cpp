@@ -1,15 +1,23 @@
 #include <sstream>
 #include "list_tag.h"
 
-ListTag::ListTag(std::string name) : BaseTag(name, TAG_LIST) {}
-void ListTag::setValue(int value) {
-   m_value = value;
+ListTag::ListTag(std::string name, TagType childType) : BaseTag(name, TAG_LIST) {
+   m_childType = childType;
 }
-int ListTag::value() {
-   return m_value;
+
+int ListTag::size() {
+   return children.size();
 }
+
+TagType ListTag::childType() {
+   return m_childType;
+}
+
 std::string ListTag::toString() {
    std::stringstream ss;
-   ss << "LIST (" << m_name << "): " << m_value;
+   ss << "LIST (" << m_name << "): [" << children.size() << "]";
+   for (auto x: children) {
+      ss << "\n" << x->toString();
+   }
    return ss.str();
 }

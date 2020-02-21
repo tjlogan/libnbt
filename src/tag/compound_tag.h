@@ -9,6 +9,7 @@
 class CompoundTag : public BaseTag {
    public:
       std::vector<std::shared_ptr<BaseTag>> children;
+
       CompoundTag(std::string name);
       std::string toString();
 };

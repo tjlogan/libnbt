@@ -144,6 +144,32 @@ TEST(LongTag, ToString_Negative) {
 }
 
 TEST(ListTag, Type) {
-    BaseTag* tag = new ListTag("test");
+    BaseTag* tag = new ListTag("test", TAG_BYTE);
     ASSERT_EQ(TAG_LIST, tag->type());
+}
+
+TEST(ListTag, Empty) {
+    ListTag tag = ListTag("test", TAG_BYTE);
+    ASSERT_EQ(0, tag.size());
+    ASSERT_EQ("LIST (test): [0]", tag.toString());
+}
+
+TEST(ListTag, WithBytes) {
+    ListTag tag = ListTag("test", TAG_BYTE);
+    auto byteTag = std::make_shared<ByteTag>("");
+    byteTag->setValue(0);
+    tag.children.push_back(byteTag);
+    ASSERT_EQ(1, tag.size());
+    ASSERT_EQ(TAG_BYTE, tag.childType());
+    ASSERT_EQ("LIST (test): [1]\nBYTE (): 0x00", tag.toString());
+}
+
+TEST(ListTag, WithInts) {
+    ListTag tag = ListTag("test", TAG_INT);
+    auto intTag = std::make_shared<IntTag>("");
+    intTag->setValue(1000);
+    tag.children.push_back(intTag);
+    ASSERT_EQ(1, tag.size());
+    ASSERT_EQ(TAG_INT, tag.childType());
+    ASSERT_EQ("LIST (test): [1]\nINT (): 1000", tag.toString());
 }
