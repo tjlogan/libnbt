@@ -56,6 +56,20 @@ TEST(ParserTests, CanParseIntTag) {
    ASSERT_EQ("INT (Test.): 16909060", tags[0]->toString());
 }
 
+TEST(ParserTests, CanParseIntTagNegative) {
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x03', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x18', '\xFC', '\xFF', '\xFF'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("INT (Test.): -1000", tags[0]->toString());
+}
+
 TEST(ParserTests, CanParseLongTag) {
    const char binary[] = {
       '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
@@ -68,6 +82,20 @@ TEST(ParserTests, CanParseLongTag) {
    std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("LONG (Test.): 72623859790382856", tags[0]->toString());
+}
+
+TEST(ParserTests, CanParseLongTagNegative) {
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x04', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x00', '\x36', '\x65', '\xC4', '\xFF', '\xFF', '\xFF', '\xFF'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("LONG (Test.): -1000000000", tags[0]->toString());
 }
 
 TEST(ParserTests, CanParseString) {
