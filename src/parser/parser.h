@@ -35,12 +35,12 @@ namespace ParserHelper {
    template <typename T>
    T read(std::istream& is) {
       std::unique_ptr<char[]> valueBuffer(new char[sizeof(T)]);
+      T result;
       is.read(valueBuffer.get(), sizeof(T));
-      T value = valueBuffer[sizeof(T) - 1];
-      for(int i = (int)sizeof(T) - 2; i >= 0; i--) {
-         value = (value << 8) + (unsigned char)valueBuffer[i];
-      }
-      return value;
+      std::copy(reinterpret_cast<const char*>(&valueBuffer[0]),
+                reinterpret_cast<const char*>(&valueBuffer[sizeof(T)]),
+                reinterpret_cast<char*>(&result));
+      return result;
    };
 }
 #endif

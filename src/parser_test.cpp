@@ -84,7 +84,7 @@ TEST(ParserTests, CanParseShortTag) {
    ASSERT_EQ("SHORT (Test.): 258", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseIntShortNegative) {
+TEST(ParserTests, CanParseShortTagNegative) {
    const char binary[] = {
       '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x02', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
@@ -234,4 +234,36 @@ TEST(ParserTest, CanParseListOfInts) {
    std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("LIST (LIST.): [2]\nINT (): 100\nINT (): 200", tags[0]->toString());
+}
+
+TEST(ParserTests, CanParseFloatTag) {
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x05', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x55', '\x55', '\x55', '\x55'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   auto floatTag = std::dynamic_pointer_cast<FloatTag>(tags[0]);
+   ASSERT_EQ(14660154687488, floatTag->value());
+   ASSERT_EQ("FLOAT (Test.): 1.46602e+13", tags[0]->toString());
+}
+
+TEST(ParserTests, CanParseFloatTagNegative) {
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x05', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x55', '\x55', '\x55', '\xD5'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   auto floatTag = std::dynamic_pointer_cast<FloatTag>(tags[0]);
+   ASSERT_EQ(-14660154687488, floatTag->value());
+   ASSERT_EQ("FLOAT (Test.): -1.46602e+13", tags[0]->toString());
 }

@@ -67,6 +67,13 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          currentCollection = &(compoundTag->children);
          break;
       }
+      case TAG_FLOAT: {
+         float value = ParserHelper::read<float>(m_is);
+         std::shared_ptr<FloatTag> floatTag = std::make_shared<FloatTag>(name);
+         floatTag->setValue(value);
+         currentCollection->push_back(floatTag);
+         break;
+      }
       case TAG_LIST: {
          TagType childType = (TagType)ParserHelper::read<char>(m_is);
          int size = ParserHelper::read<int>(m_is);
