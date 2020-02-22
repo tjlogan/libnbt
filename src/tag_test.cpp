@@ -202,3 +202,32 @@ TEST(ListTag, WithInts) {
     ASSERT_EQ(TAG_INT, tag.childType());
     ASSERT_EQ("LIST (test): [1]\nINT (): 1000", tag.toString());
 }
+
+TEST(FloatTag, Type) {
+    BaseTag* tag = new FloatTag("test");
+    ASSERT_EQ(TAG_FLOAT, tag->type());
+}
+
+TEST(FloatTag, Value) {
+    FloatTag tag = FloatTag("test");
+    tag.setValue(3.140625);
+    ASSERT_EQ(3.140625, tag.value());
+}
+
+TEST(FloatTag, Value_Negative) {
+    FloatTag tag = FloatTag("test");
+    tag.setValue(-3.140625);
+    ASSERT_EQ(-3.140625, tag.value());
+}
+
+TEST(FloatTag, ToString) {
+    FloatTag tag = FloatTag("test");
+    tag.setValue(3.140625);
+    ASSERT_EQ("FLOAT (test): 3.14062", tag.toString());
+}
+
+TEST(FloatTag, ToString_Negative) {
+    FloatTag tag = FloatTag("test");
+    tag.setValue(-3.140625);
+    ASSERT_EQ("FLOAT (test): -3.14062", tag.toString());
+}
