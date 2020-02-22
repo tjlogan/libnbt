@@ -35,6 +35,13 @@ std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
          currentCollection->push_back(readByteTag(name));
          break;
       }
+      case TAG_SHORT: {
+         short value = ParserHelper::read<short>(m_is);
+         std::shared_ptr<ShortTag> shortTag = std::make_shared<ShortTag>(name);
+         shortTag->setValue(value);
+         currentCollection->push_back(shortTag);
+         break;
+      }
       case TAG_INT: {
          currentCollection->push_back(readIntTag(name));
          break;

@@ -58,6 +58,35 @@ TEST(IntTag, ToString_Negative) {
     ASSERT_EQ("INT (test): -1025", tag.toString());
 }
 
+TEST(ShortTag, Type) {
+    BaseTag* tag = new ShortTag("test");
+    ASSERT_EQ(TAG_SHORT, tag->type());
+}
+
+TEST(ShortTag, Value) {
+    ShortTag tag = ShortTag("test");
+    tag.setValue(1025);
+    ASSERT_EQ(1025, tag.value());
+}
+
+TEST(ShortTag, Value_Negative) {
+    ShortTag tag = ShortTag("test");
+    tag.setValue(-1025);
+    ASSERT_EQ(-1025, tag.value());
+}
+
+TEST(ShortTag, ToString) {
+    ShortTag tag = ShortTag("test");
+    tag.setValue(1025);
+    ASSERT_EQ("SHORT (test): 1025", tag.toString());
+}
+
+TEST(ShortTag, ToString_Negative) {
+    ShortTag tag = ShortTag("test");
+    tag.setValue(-1025);
+    ASSERT_EQ("SHORT (test): -1025", tag.toString());
+}
+
 TEST(StringTag, Type) {
     BaseTag* tag = new StringTag("test");
     ASSERT_EQ(TAG_STRING, tag->type());

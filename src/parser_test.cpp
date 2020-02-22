@@ -70,6 +70,34 @@ TEST(ParserTests, CanParseIntTagNegative) {
    ASSERT_EQ("INT (Test.): -1000", tags[0]->toString());
 }
 
+TEST(ParserTests, CanParseShortTag) {
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x02', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x02', '\x01'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("SHORT (Test.): 258", tags[0]->toString());
+}
+
+TEST(ParserTests, CanParseIntShortNegative) {
+   const char binary[] = {
+      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
+      '\x02', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\xFE', '\xFE'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   Parser parser = Parser(iss);
+   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("SHORT (Test.): -258", tags[0]->toString());
+}
+
 TEST(ParserTests, CanParseLongTag) {
    const char binary[] = {
       '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
