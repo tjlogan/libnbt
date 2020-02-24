@@ -6,12 +6,14 @@
 #include <vector>
 #include "base_tag.h"
 
-class CompoundTag : public BaseTag {
-   public:
-      std::vector<std::shared_ptr<BaseTag>> children;
+namespace nbt {
+   class CompoundTag : public BaseTag {
+      public:
+         std::vector<std::shared_ptr<BaseTag>> children;
 
-      CompoundTag(std::string name);
-      std::string toString();
-};
+         CompoundTag(std::string name);
+         std::string toString();
+   };
+}
 
 #endif

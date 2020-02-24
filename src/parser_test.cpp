@@ -6,7 +6,7 @@ TEST(ParserTests, CanReadHeader) {
    const char binary[] = { '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00' };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
+   auto parser = nbt::Parser(iss);
    ASSERT_EQ(8, parser.version());
    ASSERT_EQ(1234, parser.size());
 }
@@ -15,7 +15,7 @@ TEST(ParserTests, CanReadZeroedHeader) {
    const char binary[] = { '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00' };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
+   auto parser = nbt::Parser(iss);
    ASSERT_EQ(0, parser.version());
    ASSERT_EQ(0, parser.size());
 }
@@ -24,8 +24,8 @@ TEST(ParserTests, ShouldReturnEmptyIfNoTags) {
    const char binary[] = { '\x08','\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00' };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(0, tags.size());
 }
 
@@ -36,8 +36,8 @@ TEST(ParserTests, CanParseByteTag) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("BYTE (Test): 0xaa", tags[0]->toString());
 }
@@ -50,8 +50,8 @@ TEST(ParserTests, CanParseIntTag) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("INT (Test.): 16909060", tags[0]->toString());
 }
@@ -64,8 +64,8 @@ TEST(ParserTests, CanParseIntTagNegative) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("INT (Test.): -1000", tags[0]->toString());
 }
@@ -78,8 +78,8 @@ TEST(ParserTests, CanParseShortTag) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("SHORT (Test.): 258", tags[0]->toString());
 }
@@ -92,8 +92,8 @@ TEST(ParserTests, CanParseShortTagNegative) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("SHORT (Test.): -258", tags[0]->toString());
 }
@@ -106,8 +106,8 @@ TEST(ParserTests, CanParseLongTag) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("LONG (Test.): 72623859790382856", tags[0]->toString());
 }
@@ -120,8 +120,8 @@ TEST(ParserTests, CanParseLongTagNegative) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("LONG (Test.): -1000000000", tags[0]->toString());
 }
@@ -134,8 +134,8 @@ TEST(ParserTests, CanParseString) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("STRING (Test.): String", tags[0]->toString());
 }
@@ -148,8 +148,8 @@ TEST(ParserTests, CanParseEmptyCompound) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("COMPOUND (Test): [0]", tags[0]->toString());
 }
@@ -165,8 +165,8 @@ TEST(ParserTests, CanParseCompoundWithMultipleTags) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("COMPOUND (Test.): [2]\nINT (.INT.): 67305985\nSTRING (S): Hello", tags[0]->toString());
 }
@@ -182,8 +182,8 @@ TEST(ParserTests, CanParseNestedCompound) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("COMPOUND (Test.): [1]\nCOMPOUND (NEST.): [1]\nINT (.INT.): 67305985", tags[0]->toString());
 }
@@ -199,8 +199,8 @@ TEST(ParserTests, CanParseCompoundWithChildAndSibling) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(2, tags.size());
    ASSERT_EQ("COMPOUND (Test.): [1]\nBYTE (BYT): 0xff", tags[0]->toString());
    ASSERT_EQ("INT (.INT.): 67305985", tags[1]->toString());
@@ -215,8 +215,8 @@ TEST(ParserTest, CanParseListofBytes) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("LIST (LIST.): [3]\nBYTE (): 0x01\nBYTE (): 0x02\nBYTE (): 0x03", tags[0]->toString());
 }
@@ -230,8 +230,8 @@ TEST(ParserTest, CanParseListOfInts) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
    ASSERT_EQ("LIST (LIST.): [2]\nINT (): 100\nINT (): 200", tags[0]->toString());
 }
@@ -244,10 +244,10 @@ TEST(ParserTests, CanParseFloatTag) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
-   auto floatTag = std::dynamic_pointer_cast<FloatTag>(tags[0]);
+   auto floatTag = std::dynamic_pointer_cast<nbt::FloatTag>(tags[0]);
    ASSERT_EQ(14660154687488, floatTag->value());
    ASSERT_EQ("FLOAT (Test.): 1.46602e+13", tags[0]->toString());
 }
@@ -260,10 +260,10 @@ TEST(ParserTests, CanParseFloatTagNegative) {
    };
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
-   Parser parser = Parser(iss);
-   std::vector<std::shared_ptr<BaseTag>> tags = parser.parse();
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(1, tags.size());
-   auto floatTag = std::dynamic_pointer_cast<FloatTag>(tags[0]);
+   auto floatTag = std::dynamic_pointer_cast<nbt::FloatTag>(tags[0]);
    ASSERT_EQ(-14660154687488, floatTag->value());
    ASSERT_EQ("FLOAT (Test.): -1.46602e+13", tags[0]->toString());
 }

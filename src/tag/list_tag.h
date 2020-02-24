@@ -6,17 +6,19 @@
 #include <memory>
 #include "base_tag.h"
 
-class ListTag : public BaseTag {
-   private:
-      TagType m_childType;
-   
-   public:
-      std::vector<std::shared_ptr<BaseTag>> children;
+namespace nbt {
+   class ListTag : public BaseTag {
+      private:
+         TagType m_childType;
+      
+      public:
+         std::vector<std::shared_ptr<BaseTag>> children;
 
-      ListTag(std::string name, TagType childType);
-      TagType childType();
-      int size();
-      std::string toString();
-};
+         ListTag(std::string name, TagType childType);
+         TagType childType();
+         int size();
+         std::string toString();
+   };
+}
 
 #endif

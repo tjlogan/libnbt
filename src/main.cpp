@@ -15,7 +15,7 @@ int main() {
       return 1;
    }
 
-   Parser parser = Parser(fin);
+   nbt::Parser parser = nbt::Parser(fin);
    std::cout << "Version: " << parser.version() << "\n";
    std::cout << "NBT Size: " << parser.size() << "\n";
    auto result = parser.parse();
