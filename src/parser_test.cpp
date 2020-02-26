@@ -2,26 +2,8 @@
 #include <sstream>
 #include "parser/parser.h"
 
-TEST(ParserTests, CanReadHeader) {
-   const char binary[] = { '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00' };
-   std::string str(binary, sizeof(binary));
-   std::istringstream iss(str);
-   auto parser = nbt::Parser(iss);
-   ASSERT_EQ(8, parser.version());
-   ASSERT_EQ(1234, parser.size());
-}
-
-TEST(ParserTests, CanReadZeroedHeader) {
-   const char binary[] = { '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00' };
-   std::string str(binary, sizeof(binary));
-   std::istringstream iss(str);
-   auto parser = nbt::Parser(iss);
-   ASSERT_EQ(0, parser.version());
-   ASSERT_EQ(0, parser.size());
-}
-
 TEST(ParserTests, ShouldReturnEmptyIfNoTags) {
-   const char binary[] = { '\x08','\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00' };
+   const char binary[] = {};
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
    auto parser = nbt::Parser(iss);
@@ -31,7 +13,6 @@ TEST(ParserTests, ShouldReturnEmptyIfNoTags) {
 
 TEST(ParserTests, CanParseByteTag) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x01', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\xAA'
    };
    std::string str(binary, sizeof(binary));
@@ -44,7 +25,6 @@ TEST(ParserTests, CanParseByteTag) {
 
 TEST(ParserTests, CanParseIntTag) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x03', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x04', '\x03', '\x02', '\x01'
    };
@@ -58,7 +38,6 @@ TEST(ParserTests, CanParseIntTag) {
 
 TEST(ParserTests, CanParseIntTagNegative) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x03', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x18', '\xFC', '\xFF', '\xFF'
    };
@@ -72,7 +51,6 @@ TEST(ParserTests, CanParseIntTagNegative) {
 
 TEST(ParserTests, CanParseShortTag) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x02', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x02', '\x01'
    };
@@ -86,7 +64,6 @@ TEST(ParserTests, CanParseShortTag) {
 
 TEST(ParserTests, CanParseShortTagNegative) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x02', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\xFE', '\xFE'
    };
@@ -100,7 +77,6 @@ TEST(ParserTests, CanParseShortTagNegative) {
 
 TEST(ParserTests, CanParseLongTag) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x04', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x08', '\x07', '\x06', '\x05', '\x04', '\x03', '\x02', '\x01'
    };
@@ -114,7 +90,6 @@ TEST(ParserTests, CanParseLongTag) {
 
 TEST(ParserTests, CanParseLongTagNegative) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x04', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x00', '\x36', '\x65', '\xC4', '\xFF', '\xFF', '\xFF', '\xFF'
    };
@@ -128,7 +103,6 @@ TEST(ParserTests, CanParseLongTagNegative) {
 
 TEST(ParserTests, CanParseString) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x08', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x06', '\x00',   'S',    't',    'r',    'i',    'n',    'g'
    };
@@ -143,7 +117,6 @@ TEST(ParserTests, CanParseString) {
 TEST(ParserTests, CanParseEmptyCompound) {
    // Compound Tag immediately followed by an End Tag
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x0A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\x00'
    };
    std::string str(binary, sizeof(binary));
@@ -157,7 +130,6 @@ TEST(ParserTests, CanParseEmptyCompound) {
 TEST(ParserTests, CanParseCompoundWithMultipleTags) {
    // Compound Tag with an Int and String Tag followed by an End Tag
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '.',
       '\x01', '\x02', '\x03', '\x04', '\x08', '\x01', '\x00',   'S',
@@ -174,7 +146,6 @@ TEST(ParserTests, CanParseCompoundWithMultipleTags) {
 TEST(ParserTests, CanParseNestedCompound) {
    // Compound Tag with a Compound Tag with an Int Tag followed by End Tags
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x0A', '\x05', '\x00',   'N',    'E',    'S',    'T',    '.',
       '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '.',
@@ -191,7 +162,6 @@ TEST(ParserTests, CanParseNestedCompound) {
 TEST(ParserTests, CanParseCompoundWithChildAndSibling) {
    // Compound Tag with a Byte Tag followed by an End Tag and Int Tag
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x01', '\x03', '\x00',   'B',    'Y',    'T',  '\xFF', '\x00',
       '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '.',
@@ -209,7 +179,6 @@ TEST(ParserTests, CanParseCompoundWithChildAndSibling) {
 TEST(ParserTest, CanParseListofBytes) {
    // List tag of 3 Bytes 
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
       '\x01', '\x03', '\x00', '\x00', '\x00', '\x01', '\x02', '\x03',
    };
@@ -223,7 +192,6 @@ TEST(ParserTest, CanParseListofBytes) {
 
 TEST(ParserTest, CanParseListOfInts) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
       '\x03', '\x02', '\x00', '\x00', '\x00', '\x64', '\x00', '\x00',
       '\x00', '\xC8', '\x00', '\x00', '\x00'
@@ -238,7 +206,6 @@ TEST(ParserTest, CanParseListOfInts) {
 
 TEST(ParserTests, CanParseFloatTag) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x05', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x55', '\x55', '\x55', '\x55'
    };
@@ -254,7 +221,6 @@ TEST(ParserTests, CanParseFloatTag) {
 
 TEST(ParserTests, CanParseFloatTagNegative) {
    const char binary[] = {
-      '\x08', '\x00', '\x00', '\x00', '\xD2', '\x04', '\x00', '\x00',
       '\x05', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x55', '\x55', '\x55', '\xD5'
    };

@@ -4,21 +4,12 @@
 #include <istream>
 #include <vector>
 #include <memory>
-#include "../tag/tag.h"
-
-#pragma pack(push, 1) 
-struct Header {
-   int version;
-   int size;
-};
-#pragma pack(pop)
+#include "tag/tag.h"
 
 namespace nbt {
    class Parser {
       private:
          std::istream& m_is;
-         unsigned int m_version;
-         unsigned int m_size;
          std::vector<std::shared_ptr<BaseTag>> m_root;
 
          std::string readString();
@@ -27,8 +18,6 @@ namespace nbt {
 
       public:
          Parser(std::istream& is);
-         unsigned int version();
-         unsigned int size();
          std::vector<std::shared_ptr<BaseTag>> parse();
    };
 

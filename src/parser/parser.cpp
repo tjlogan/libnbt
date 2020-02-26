@@ -2,24 +2,9 @@
 #include <iostream>
 #include <iomanip>
 #include "parser.h"
-#include "../tag/tag.h"
 
 namespace nbt {
-   Parser::Parser(std::istream& is) : m_is(is) {
-      char* buffer = new char[8];
-      m_is.read(buffer, 8);
-      struct Header* header = (Header*)buffer;
-      m_version = header->version;
-      m_size = header->size;
-   };
-
-   unsigned int Parser::version() {
-      return m_version;
-   };
-
-   unsigned int Parser::size() {
-      return m_size;
-   };
+   Parser::Parser(std::istream& is) : m_is(is) {};
 
    std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
       char tagBuffer;

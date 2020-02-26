@@ -18,5 +18,4 @@ target_link_libraries(runTests ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARY} pthread 
 
 target_link_libraries(reader nbt)
 
-add_subdirectory(tag)
 add_subdirectory(parser)

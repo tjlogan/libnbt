@@ -8,3 +8,5 @@ target_sources(nbt
    PRIVATE
    ${CMAKE_CURRENT_LIST_DIR}/parser.cpp
 )
+
+add_subdirectory(tag)
