@@ -1,5 +1,5 @@
 #include <string>
-#include "libnbt/parser/tag/base_tag.h"
+#include "libnbt/tag/base_tag.h"
 
 namespace nbt {
    BaseTag::BaseTag(std::string name, TagType type) : m_name(name), m_type(type) {}

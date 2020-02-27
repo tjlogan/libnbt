@@ -1,5 +1,5 @@
 #include <sstream>
-#include "libnbt/parser/tag/compound_tag.h"
+#include "libnbt/tag/compound_tag.h"
 
 namespace nbt {
    CompoundTag::CompoundTag(std::string name) : BaseTag(name, TAG_COMPOUND) {}

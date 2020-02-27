@@ -1,5 +1,5 @@
 #include <sstream>
-#include "libnbt/parser/tag/string_tag.h"
+#include "libnbt/tag/string_tag.h"
 
 namespace nbt {
    StringTag::StringTag(std::string name) : BaseTag(name, TAG_STRING) {}

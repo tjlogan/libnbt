@@ -1,5 +1,5 @@
 #include <sstream>
-#include "libnbt/parser/tag/int_tag.h"
+#include "libnbt/tag/int_tag.h"
 
 namespace nbt {
    IntTag::IntTag(std::string name) : BaseTag(name, TAG_INT) {}

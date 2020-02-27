@@ -6,8 +6,8 @@ endif("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
 
 add_executable(reader main.cpp)
 
-add_library(nbt STATIC)
+add_library(nbt STATIC parser.cpp)
 
 target_link_libraries(reader nbt)
 
-add_subdirectory(parser)
+add_subdirectory(tag)

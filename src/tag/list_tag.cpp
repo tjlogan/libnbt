@@ -1,5 +1,5 @@
 #include <sstream>
-#include "libnbt/parser/tag/list_tag.h"
+#include "libnbt/tag/list_tag.h"
 
 namespace nbt {
    ListTag::ListTag(std::string name, TagType childType) : BaseTag(name, TAG_LIST) {

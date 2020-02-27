@@ -1,7 +1,7 @@
 #include <memory>
 #include <iostream>
 #include <iomanip>
-#include "libnbt/parser/parser.h"
+#include "libnbt/parser.h"
 
 namespace nbt {
    Parser::Parser(std::istream& is) : m_is(is) {};
