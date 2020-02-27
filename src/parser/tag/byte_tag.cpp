@@ -1,6 +1,6 @@
 #include <sstream>
 #include <iomanip>
-#include "byte_tag.h"
+#include "libnbt/parser/tag/byte_tag.h"
 
 namespace nbt {
    ByteTag::ByteTag(std::string name) : BaseTag(name, TAG_BYTE) {}

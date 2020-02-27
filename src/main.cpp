@@ -3,8 +3,8 @@
 #include <fstream>
 #include <cstring>
 #include <cerrno>
-#include "parser/tag/tag.h"
-#include "parser/parser.h"
+#include "libnbt/parser/tag/tag.h"
+#include "libnbt/parser/parser.h"
 
 #pragma pack(push, 1) 
 struct Header {

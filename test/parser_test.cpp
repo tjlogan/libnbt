@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <sstream>
-#include "parser/parser.h"
+#include "libnbt/parser/parser.h"
 
 TEST(ParserTests, ShouldReturnEmptyIfNoTags) {
    const char binary[] = {};

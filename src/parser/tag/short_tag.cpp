@@ -1,5 +1,5 @@
 #include <sstream>
-#include "short_tag.h"
+#include "libnbt/parser/tag/short_tag.h"
 
 namespace nbt {
    ShortTag::ShortTag(std::string name) : BaseTag(name, TAG_SHORT) {}

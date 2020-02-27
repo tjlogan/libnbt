@@ -1,5 +1,5 @@
 #include <sstream>
-#include "tag.h"
+#include "libnbt/parser/tag/tag.h"
 
 namespace nbt {
    FloatTag::FloatTag(std::string name) : BaseTag(name, TAG_FLOAT) {}

@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "parser/tag/tag.h"
+#include "libnbt/parser/tag/tag.h"
 
 TEST(BaseTag, Name) { 
     nbt::BaseTag* tag = new nbt::ByteTag("test");

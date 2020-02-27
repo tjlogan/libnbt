@@ -8,14 +8,6 @@ add_executable(reader main.cpp)
 
 add_library(nbt STATIC)
 
-# Locate GTest
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
-
-# Link runTests with what we want to test and the GTest and pthread library
-add_executable(runTests tag_test.cpp parser_test.cpp)
-target_link_libraries(runTests ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARY} pthread nbt)
-
 target_link_libraries(reader nbt)
 
 add_subdirectory(parser)

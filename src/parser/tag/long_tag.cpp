@@ -1,5 +1,5 @@
 #include <sstream>
-#include "long_tag.h"
+#include "libnbt/parser/tag/long_tag.h"
 
 namespace nbt {
    LongTag::LongTag(std::string name) : BaseTag(name, TAG_LONG) {}
