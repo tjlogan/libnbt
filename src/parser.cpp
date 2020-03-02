@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include "libnbt/parser.h"
+#include "libnbt/parser_helper.h"
 
 namespace nbt {
    Parser::Parser(std::istream& is) : m_is(is) {};
@@ -18,7 +19,7 @@ namespace nbt {
          }
          switch (tagBuffer) {
          case TAG_BYTE: {
-            currentCollection->push_back(readByteTag(name));
+            currentCollection->push_back(ParserHelper::readTag<char, ByteTag>(m_is, name));
             break;
          }
          case TAG_SHORT: {
@@ -29,7 +30,7 @@ namespace nbt {
             break;
          }
          case TAG_INT: {
-            currentCollection->push_back(readIntTag(name));
+            currentCollection->push_back(ParserHelper::readTag<int, IntTag>(m_is, name));
             break;
          }
          case TAG_LONG: {
@@ -68,11 +69,11 @@ namespace nbt {
             for(int i = 0; i < size; i++) {
                switch (childType) {
                case TAG_BYTE: {
-                  childTag = readByteTag("");
+                  childTag = ParserHelper::readTag<char, ByteTag>(m_is, "");
                   break;
                }
                case TAG_INT: {
-                  childTag = readIntTag("");
+                  childTag = ParserHelper::readTag<int, IntTag>(m_is, "");
                   break;
                }
                default:
@@ -113,19 +114,5 @@ namespace nbt {
          return name.assign(nameBuffer.get(), nameLength);
       }
       return name;
-   }
-
-   std::shared_ptr<ByteTag> Parser::readByteTag(std::string name) {
-      char value = ParserHelper::read<char>(m_is);
-      std::shared_ptr<ByteTag> byteTag = std::make_shared<ByteTag>(name);
-      byteTag->setValue(value);
-      return byteTag;
-   }
-
-   std::shared_ptr<IntTag> Parser::readIntTag(std::string name) {
-      int value = ParserHelper::read<int>(m_is);
-      std::shared_ptr<IntTag> intTag = std::make_shared<IntTag>(name);
-      intTag->setValue(value);
-      return intTag;
    }
 }
