@@ -23,10 +23,7 @@ namespace nbt {
             break;
          }
          case TAG_SHORT: {
-            short value = ParserHelper::read<short>(m_is);
-            std::shared_ptr<ShortTag> shortTag = std::make_shared<ShortTag>(name);
-            shortTag->setValue(value);
-            currentCollection->push_back(shortTag);
+            currentCollection->push_back(ParserHelper::readTag<short, ShortTag>(m_is, name));
             break;
          }
          case TAG_INT: {
@@ -34,10 +31,7 @@ namespace nbt {
             break;
          }
          case TAG_LONG: {
-            long value = ParserHelper::read<long>(m_is);
-            std::shared_ptr<LongTag> longTag = std::make_shared<LongTag>(name);
-            longTag->setValue(value);
-            currentCollection->push_back(longTag);
+            currentCollection->push_back(ParserHelper::readTag<long, LongTag>(m_is, name));
             break;
          }
          case TAG_STRING: {
