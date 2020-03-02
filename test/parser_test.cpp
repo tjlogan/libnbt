@@ -191,6 +191,7 @@ TEST(ParserTest, CanParseListofBytes) {
 }
 
 TEST(ParserTest, CanParseListOfInts) {
+   // List tag of 2 Ints
    const char binary[] = {
       '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
       '\x03', '\x02', '\x00', '\x00', '\x00', '\x64', '\x00', '\x00',
@@ -232,4 +233,17 @@ TEST(ParserTests, CanParseFloatTagNegative) {
    auto floatTag = std::dynamic_pointer_cast<nbt::FloatTag>(tags[0]);
    ASSERT_EQ(-14660154687488, floatTag->value());
    ASSERT_EQ("FLOAT (Test.): -1.46602e+13", tags[0]->toString());
+}
+
+TEST(ParserTests, DoesNotCrashOnUnpairedEndTag) {
+   // Compound Tag immediately followed by two End Tags then another compound tag
+   const char binary[] = {
+      '\x0A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\x00',
+      '\x00', '\x0A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74',
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(2, tags.size());
 }

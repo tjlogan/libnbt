@@ -85,8 +85,12 @@ namespace nbt {
             break;
          }
          case TAG_END: {
-            currentCollection = tagStack.back();
-            tagStack.pop_back();
+            if (!tagStack.empty()) {
+               currentCollection = tagStack.back();
+               tagStack.pop_back();
+            } else {
+               std::cerr << "Unpaired End tag encountered\n";
+            }
             break;
          }
          default:
