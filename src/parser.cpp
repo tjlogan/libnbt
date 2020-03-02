@@ -49,10 +49,7 @@ namespace nbt {
             break;
          }
          case TAG_FLOAT: {
-            float value = ParserHelper::read<float>(m_is);
-            std::shared_ptr<FloatTag> floatTag = std::make_shared<FloatTag>(name);
-            floatTag->setValue(value);
-            currentCollection->push_back(floatTag);
+            currentCollection->push_back(ParserHelper::readTag<float, FloatTag>(m_is, name));
             break;
          }
          case TAG_LIST: {
