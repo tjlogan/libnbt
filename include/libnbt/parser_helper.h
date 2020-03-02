@@ -14,6 +14,19 @@ namespace nbt {
          return result;
       };
 
+      template <>
+      std::string read(std::istream& is) {
+         short nameLength;
+         std::string name;
+         is.read(reinterpret_cast<char*>(&nameLength), 2);
+         if (nameLength > 0) {
+            std::unique_ptr<char[]> nameBuffer(new char[nameLength]);
+            is.read(nameBuffer.get(), nameLength);
+            return name.assign(nameBuffer.get(), nameLength);
+         }
+         return name;
+      }
+
       template <typename T, class U>
       std::shared_ptr<U> readTag(std::istream& is, std::string name) {
          T value = read<T>(is);

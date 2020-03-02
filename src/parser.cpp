@@ -15,7 +15,7 @@ namespace nbt {
 
       while(m_is.read(&tagBuffer, 1)) {
          if (tagBuffer != TAG_END) {
-            name = readString();
+            name = ParserHelper::read<std::string>(m_is);
          }
          switch (tagBuffer) {
          case TAG_BYTE: {
@@ -35,10 +35,7 @@ namespace nbt {
             break;
          }
          case TAG_STRING: {
-            std::string value = readString();
-            std::shared_ptr<StringTag> stringTag = std::make_shared<StringTag>(name);
-            stringTag->setValue(value);
-            currentCollection->push_back(stringTag);
+            currentCollection->push_back(ParserHelper::readTag<std::string, StringTag>(m_is, name));
             break;
          }
          case TAG_COMPOUND: {
@@ -94,16 +91,4 @@ namespace nbt {
       end_loop:
       return m_root;
    };
-
-   std::string Parser::readString() {
-      short nameLength;
-      std::string name;
-      m_is.read(reinterpret_cast<char*>(&nameLength), 2);
-      if (nameLength > 0) {
-         std::unique_ptr<char[]> nameBuffer(new char[nameLength]);
-         m_is.read(nameBuffer.get(), nameLength);
-         return name.assign(nameBuffer.get(), nameLength);
-      }
-      return name;
-   }
 }
