@@ -34,6 +34,10 @@ namespace nbt {
             currentCollection->push_back(ParserHelper::readTag<long, LongTag>(m_is, name));
             break;
          }
+         case TAG_FLOAT: {
+            currentCollection->push_back(ParserHelper::readTag<float, FloatTag>(m_is, name));
+            break;
+         }
          case TAG_STRING: {
             currentCollection->push_back(ParserHelper::readTag<std::string, StringTag>(m_is, name));
             break;
@@ -43,10 +47,6 @@ namespace nbt {
             currentCollection->push_back(compoundTag);
             tagStack.push_back(currentCollection);
             currentCollection = &(compoundTag->children);
-            break;
-         }
-         case TAG_FLOAT: {
-            currentCollection->push_back(ParserHelper::readTag<float, FloatTag>(m_is, name));
             break;
          }
          case TAG_LIST: {
@@ -91,4 +91,42 @@ namespace nbt {
       end_loop:
       return m_root;
    };
+
+   std::shared_ptr<BaseTag> Parser::parseTag() {
+      char tagBuffer;
+      std::string name;
+      std::shared_ptr<BaseTag> tag;
+
+      m_is.read(&tagBuffer, 1);
+      if (tagBuffer != TAG_END) {
+         name = ParserHelper::read<std::string>(m_is);
+      }
+      switch (tagBuffer) {
+         case TAG_BYTE: {
+            tag = ParserHelper::readTag<char, ByteTag>(m_is, name);
+            break;
+         }
+         case TAG_SHORT: {
+            tag = ParserHelper::readTag<short, ShortTag>(m_is, name);
+            break;
+         }
+         case TAG_INT: {
+            tag = ParserHelper::readTag<int, IntTag>(m_is, name);
+            break;
+         }
+         case TAG_LONG: {
+            tag = ParserHelper::readTag<long, LongTag>(m_is, name);
+            break;
+         }
+         case TAG_FLOAT: {
+            tag = ParserHelper::readTag<float, FloatTag>(m_is, name);
+            break;
+         }
+         case TAG_STRING: {
+            tag = ParserHelper::readTag<std::string, StringTag>(m_is, name);
+            break;
+         }
+      }
+      return tag;
+   }
 }

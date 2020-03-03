@@ -2,7 +2,7 @@
 #include <sstream>
 #include "libnbt/parser.h"
 
-TEST(ParserTests, ShouldReturnEmptyIfNoTags) {
+TEST(ParseTests, ShouldReturnEmptyIfNoTags) {
    const char binary[] = {};
    std::string str(binary, sizeof(binary));
    std::istringstream iss(str);
@@ -11,7 +11,7 @@ TEST(ParserTests, ShouldReturnEmptyIfNoTags) {
    ASSERT_EQ(0, tags.size());
 }
 
-TEST(ParserTests, CanParseByteTag) {
+TEST(ParseTests, CanParseByteTag) {
    const char binary[] = {
       '\x01', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\xAA'
    };
@@ -23,7 +23,7 @@ TEST(ParserTests, CanParseByteTag) {
    ASSERT_EQ("BYTE (Test): 0xaa", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseIntTag) {
+TEST(ParseTests, CanParseIntTag) {
    const char binary[] = {
       '\x03', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x04', '\x03', '\x02', '\x01'
@@ -36,7 +36,7 @@ TEST(ParserTests, CanParseIntTag) {
    ASSERT_EQ("INT (Test.): 16909060", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseIntTagNegative) {
+TEST(ParseTests, CanParseIntTagNegative) {
    const char binary[] = {
       '\x03', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x18', '\xFC', '\xFF', '\xFF'
@@ -49,7 +49,7 @@ TEST(ParserTests, CanParseIntTagNegative) {
    ASSERT_EQ("INT (Test.): -1000", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseShortTag) {
+TEST(ParseTests, CanParseShortTag) {
    const char binary[] = {
       '\x02', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x02', '\x01'
@@ -62,7 +62,7 @@ TEST(ParserTests, CanParseShortTag) {
    ASSERT_EQ("SHORT (Test.): 258", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseShortTagNegative) {
+TEST(ParseTests, CanParseShortTagNegative) {
    const char binary[] = {
       '\x02', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\xFE', '\xFE'
@@ -75,7 +75,7 @@ TEST(ParserTests, CanParseShortTagNegative) {
    ASSERT_EQ("SHORT (Test.): -258", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseLongTag) {
+TEST(ParseTests, CanParseLongTag) {
    const char binary[] = {
       '\x04', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x08', '\x07', '\x06', '\x05', '\x04', '\x03', '\x02', '\x01'
@@ -88,7 +88,7 @@ TEST(ParserTests, CanParseLongTag) {
    ASSERT_EQ("LONG (Test.): 72623859790382856", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseLongTagNegative) {
+TEST(ParseTests, CanParseLongTagNegative) {
    const char binary[] = {
       '\x04', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x00', '\x36', '\x65', '\xC4', '\xFF', '\xFF', '\xFF', '\xFF'
@@ -101,7 +101,7 @@ TEST(ParserTests, CanParseLongTagNegative) {
    ASSERT_EQ("LONG (Test.): -1000000000", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseString) {
+TEST(ParseTests, CanParseString) {
    const char binary[] = {
       '\x08', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x06', '\x00',   'S',    't',    'r',    'i',    'n',    'g'
@@ -114,7 +114,7 @@ TEST(ParserTests, CanParseString) {
    ASSERT_EQ("STRING (Test.): String", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseEmptyCompound) {
+TEST(ParseTests, CanParseEmptyCompound) {
    // Compound Tag immediately followed by an End Tag
    const char binary[] = {
       '\x0A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\x00'
@@ -127,7 +127,7 @@ TEST(ParserTests, CanParseEmptyCompound) {
    ASSERT_EQ("COMPOUND (Test): [0]", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseCompoundWithMultipleTags) {
+TEST(ParseTests, CanParseCompoundWithMultipleTags) {
    // Compound Tag with an Int and String Tag followed by an End Tag
    const char binary[] = {
       '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
@@ -143,7 +143,7 @@ TEST(ParserTests, CanParseCompoundWithMultipleTags) {
    ASSERT_EQ("COMPOUND (Test.): [2]\nINT (.INT.): 67305985\nSTRING (S): Hello", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseNestedCompound) {
+TEST(ParseTests, CanParseNestedCompound) {
    // Compound Tag with a Compound Tag with an Int Tag followed by End Tags
    const char binary[] = {
       '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
@@ -159,7 +159,7 @@ TEST(ParserTests, CanParseNestedCompound) {
    ASSERT_EQ("COMPOUND (Test.): [1]\nCOMPOUND (NEST.): [1]\nINT (.INT.): 67305985", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseCompoundWithChildAndSibling) {
+TEST(ParseTests, CanParseCompoundWithChildAndSibling) {
    // Compound Tag with a Byte Tag followed by an End Tag and Int Tag
    const char binary[] = {
       '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
@@ -176,7 +176,7 @@ TEST(ParserTests, CanParseCompoundWithChildAndSibling) {
    ASSERT_EQ("INT (.INT.): 67305985", tags[1]->toString());
 }
 
-TEST(ParserTest, CanParseListofBytes) {
+TEST(ParseTests, CanParseListofBytes) {
    // List tag of 3 Bytes 
    const char binary[] = {
       '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
@@ -190,7 +190,7 @@ TEST(ParserTest, CanParseListofBytes) {
    ASSERT_EQ("LIST (LIST.): [3]\nBYTE (): 0x01\nBYTE (): 0x02\nBYTE (): 0x03", tags[0]->toString());
 }
 
-TEST(ParserTest, CanParseListOfInts) {
+TEST(ParseTests, CanParseListOfInts) {
    // List tag of 2 Ints
    const char binary[] = {
       '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
@@ -205,7 +205,7 @@ TEST(ParserTest, CanParseListOfInts) {
    ASSERT_EQ("LIST (LIST.): [2]\nINT (): 100\nINT (): 200", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseFloatTag) {
+TEST(ParseTests, CanParseFloatTag) {
    const char binary[] = {
       '\x05', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x55', '\x55', '\x55', '\x55'
@@ -220,7 +220,7 @@ TEST(ParserTests, CanParseFloatTag) {
    ASSERT_EQ("FLOAT (Test.): 1.46602e+13", tags[0]->toString());
 }
 
-TEST(ParserTests, CanParseFloatTagNegative) {
+TEST(ParseTests, CanParseFloatTagNegative) {
    const char binary[] = {
       '\x05', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x55', '\x55', '\x55', '\xD5'
@@ -235,7 +235,7 @@ TEST(ParserTests, CanParseFloatTagNegative) {
    ASSERT_EQ("FLOAT (Test.): -1.46602e+13", tags[0]->toString());
 }
 
-TEST(ParserTests, DoesNotCrashOnUnpairedEndTag) {
+TEST(ParseTests, DoesNotCrashOnUnpairedEndTag) {
    // Compound Tag immediately followed by two End Tags then another compound tag
    const char binary[] = {
       '\x0A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\x00',
@@ -246,4 +246,95 @@ TEST(ParserTests, DoesNotCrashOnUnpairedEndTag) {
    auto parser = nbt::Parser(iss);
    std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
    ASSERT_EQ(2, tags.size());
+}
+
+TEST(ParseTagTests, CanParseSingleByteTag) {
+   // Three Byte Tags
+   const char binary[] = {
+      '\x01', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\xAA',
+      '\x01', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\xBB',
+      '\x01', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\xCC',
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::shared_ptr<nbt::BaseTag> tag = parser.parseTag();
+   auto byteTag = std::dynamic_pointer_cast<nbt::ByteTag>(tag);
+   ASSERT_EQ('\xAA', byteTag->value());
+}
+
+TEST(ParseTagTests, CanParseMultipleSingleTags) {
+   // Three Byte Tags
+   const char binary[] = {
+      '\x01', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\xAA',
+      '\x01', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\xBB',
+      '\x01', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\xCC',
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto tag1 = std::dynamic_pointer_cast<nbt::ByteTag>(parser.parseTag());
+   auto tag2 = std::dynamic_pointer_cast<nbt::ByteTag>(parser.parseTag());
+   ASSERT_EQ('\xAA', tag1->value());
+   ASSERT_EQ('\xBB', tag2->value());
+}
+
+TEST(ParseTagTests, CanParseSingleIntTag) {
+   const char binary[] = {
+      '\x03', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x04', '\x03', '\x02', '\x01'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto intTag = std::dynamic_pointer_cast<nbt::IntTag>(parser.parseTag());
+   ASSERT_EQ(16909060, intTag->value());
+}
+
+TEST(ParseTagTests, CanParseSingleShortTag) {
+   const char binary[] = {
+      '\x02', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x02', '\x01'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto shortTag = std::dynamic_pointer_cast<nbt::ShortTag>(parser.parseTag());
+   ASSERT_EQ(258, shortTag->value());
+}
+
+TEST(ParseTagTests, CanParseSingleLongTag) {
+   const char binary[] = {
+      '\x04', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x08', '\x07', '\x06', '\x05', '\x04', '\x03', '\x02', '\x01'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto longTag = std::dynamic_pointer_cast<nbt::LongTag>(parser.parseTag());
+   ASSERT_EQ(72623859790382856, longTag->value());
+}
+
+TEST(ParseTagTests, CanParseSingleFloatTag) {
+   const char binary[] = {
+      '\x05', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x55', '\x55', '\x55', '\x55'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto floatTag = std::dynamic_pointer_cast<nbt::FloatTag>(parser.parseTag());
+   ASSERT_EQ(14660154687488, floatTag->value());
+}
+
+TEST(ParseTagTests, CanParseSingleString) {
+   const char binary[] = {
+      '\x08', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x06', '\x00',   'S',    't',    'r',    'i',    'n',    'g'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto stringTag = std::dynamic_pointer_cast<nbt::StringTag>(parser.parseTag());
+   ASSERT_EQ("String", stringTag->value());
 }
