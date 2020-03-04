@@ -52,7 +52,7 @@ namespace nbt {
          case TAG_LIST: {
             TagType childType = (TagType)ParserHelper::read<char>(m_is);
             int size = ParserHelper::read<int>(m_is);
-            std::shared_ptr<ListTag> listTag = std::make_shared<ListTag>(name, childType);
+            auto listTag = std::make_shared<ListTag>(name, childType);
             std::shared_ptr<BaseTag> childTag;
             for(int i = 0; i < size; i++) {
                switch (childType) {
@@ -135,7 +135,7 @@ namespace nbt {
          case TAG_LIST: {
             TagType childType = (TagType)ParserHelper::read<char>(m_is);
             int size = ParserHelper::read<int>(m_is);
-            std::shared_ptr<ListTag> listTag = std::make_shared<ListTag>(name, childType);
+            auto listTag = std::make_shared<ListTag>(name, childType);
             std::shared_ptr<BaseTag> childTag;
             for(int i = 0; i < size; i++) {
                switch (childType) {
@@ -152,8 +152,9 @@ namespace nbt {
                      break;
                }
                listTag->children.push_back(childTag);
-               tag = listTag;
             }
+            tag = listTag;
+            break;
          }
       }
       return tag;
@@ -219,8 +220,9 @@ namespace nbt {
                         break;
                   }
                   listTag->children.push_back(childTag);
-                  tag = listTag;
                }
+               tag = listTag;
+               break;
             }
          }
          collection.push_back(tag);
