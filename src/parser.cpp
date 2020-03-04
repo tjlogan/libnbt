@@ -78,10 +78,32 @@ namespace nbt {
       std::shared_ptr<BaseTag> tag;
 
       m_is.read(&tagBuffer, 1);
-      if (tagBuffer != TAG_END) {
+      return readTag((TagType)tagBuffer);
+   }
+
+   std::vector<std::shared_ptr<BaseTag>> Parser::parseUntilEnd() {
+      char tagBuffer;
+      std::string name;
+      std::shared_ptr<BaseTag> tag;
+      std::vector<std::shared_ptr<BaseTag>> collection;
+
+      m_is.read(&tagBuffer, 1);
+      while(tagBuffer != TAG_END) {
+         tag = readTag((TagType)tagBuffer);
+         collection.push_back(tag);
+         m_is.read(&tagBuffer, 1);
+      }
+      return collection;
+   }
+
+   std::shared_ptr<BaseTag> Parser::readTag(TagType type) {
+      std::string name;
+      std::shared_ptr<BaseTag> tag;
+
+      if (type != TAG_END) {
          name = ParserHelper::read<std::string>(m_is);
       }
-      switch (tagBuffer) {
+      switch (type) {
          case TAG_BYTE: {
             tag = ParserHelper::readTag<char, ByteTag>(m_is, name);
             break;
@@ -118,57 +140,6 @@ namespace nbt {
          }
       }
       return tag;
-   }
-
-   std::vector<std::shared_ptr<BaseTag>> Parser::parseUntilEnd() {
-      char tagBuffer;
-      std::string name;
-      std::shared_ptr<BaseTag> tag;
-      std::vector<std::shared_ptr<BaseTag>> collection;
-
-      m_is.read(&tagBuffer, 1);
-      while(tagBuffer != TAG_END) {
-         name = ParserHelper::read<std::string>(m_is);
-         switch (tagBuffer) {
-            case TAG_BYTE: {
-               tag = ParserHelper::readTag<char, ByteTag>(m_is, name);
-               break;
-            }
-            case TAG_SHORT: {
-               tag = ParserHelper::readTag<short, ShortTag>(m_is, name);
-               break;
-            }
-            case TAG_INT: {
-               tag = ParserHelper::readTag<int, IntTag>(m_is, name);
-               break;
-            }
-            case TAG_LONG: {
-               tag = ParserHelper::readTag<long, LongTag>(m_is, name);
-               break;
-            }
-            case TAG_FLOAT: {
-               tag = ParserHelper::readTag<float, FloatTag>(m_is, name);
-               break;
-            }
-            case TAG_STRING: {
-               tag = ParserHelper::readTag<std::string, StringTag>(m_is, name);
-               break;
-            }
-            case TAG_COMPOUND: {
-               auto compoundTag = std::make_shared<CompoundTag>(name);
-               compoundTag->children = parseUntilEnd();
-               tag = compoundTag;
-               break;
-            }
-            case TAG_LIST: {
-               tag = readList(name);
-               break;
-            }
-         }
-         collection.push_back(tag);
-         m_is.read(&tagBuffer, 1);
-      }
-      return collection;
    }
 
    std::shared_ptr<ListTag> Parser::readList(std::string name) {
