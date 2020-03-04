@@ -11,6 +11,7 @@ namespace nbt {
       private:
          std::istream& m_is;
          std::vector<std::shared_ptr<BaseTag>> m_root;
+         std::vector<std::shared_ptr<BaseTag>> parseUntilEnd();
 
       public:
          Parser(std::istream& is);

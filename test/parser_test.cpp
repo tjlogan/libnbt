@@ -260,6 +260,7 @@ TEST(ParseTagTests, CanParseSingleByteTag) {
    auto parser = nbt::Parser(iss);
    std::shared_ptr<nbt::BaseTag> tag = parser.parseTag();
    auto byteTag = std::dynamic_pointer_cast<nbt::ByteTag>(tag);
+   ASSERT_NE(nullptr, byteTag);
    ASSERT_EQ('\xAA', byteTag->value());
 }
 
@@ -275,6 +276,8 @@ TEST(ParseTagTests, CanParseMultipleSingleTags) {
    auto parser = nbt::Parser(iss);
    auto tag1 = std::dynamic_pointer_cast<nbt::ByteTag>(parser.parseTag());
    auto tag2 = std::dynamic_pointer_cast<nbt::ByteTag>(parser.parseTag());
+   ASSERT_NE(nullptr, tag1);
+   ASSERT_NE(nullptr, tag2);
    ASSERT_EQ('\xAA', tag1->value());
    ASSERT_EQ('\xBB', tag2->value());
 }
@@ -288,6 +291,7 @@ TEST(ParseTagTests, CanParseSingleIntTag) {
    std::istringstream iss(str);
    auto parser = nbt::Parser(iss);
    auto intTag = std::dynamic_pointer_cast<nbt::IntTag>(parser.parseTag());
+   ASSERT_NE(nullptr, intTag);
    ASSERT_EQ(16909060, intTag->value());
 }
 
@@ -300,6 +304,7 @@ TEST(ParseTagTests, CanParseSingleShortTag) {
    std::istringstream iss(str);
    auto parser = nbt::Parser(iss);
    auto shortTag = std::dynamic_pointer_cast<nbt::ShortTag>(parser.parseTag());
+   ASSERT_NE(nullptr, shortTag);
    ASSERT_EQ(258, shortTag->value());
 }
 
@@ -312,6 +317,7 @@ TEST(ParseTagTests, CanParseSingleLongTag) {
    std::istringstream iss(str);
    auto parser = nbt::Parser(iss);
    auto longTag = std::dynamic_pointer_cast<nbt::LongTag>(parser.parseTag());
+   ASSERT_NE(nullptr, longTag);
    ASSERT_EQ(72623859790382856, longTag->value());
 }
 
@@ -324,10 +330,11 @@ TEST(ParseTagTests, CanParseSingleFloatTag) {
    std::istringstream iss(str);
    auto parser = nbt::Parser(iss);
    auto floatTag = std::dynamic_pointer_cast<nbt::FloatTag>(parser.parseTag());
+   ASSERT_NE(nullptr, floatTag);
    ASSERT_EQ(14660154687488, floatTag->value());
 }
 
-TEST(ParseTagTests, CanParseSingleString) {
+TEST(ParseTagTests, CanParseSingleStringTag) {
    const char binary[] = {
       '\x08', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
       '\x06', '\x00',   'S',    't',    'r',    'i',    'n',    'g'
@@ -336,5 +343,60 @@ TEST(ParseTagTests, CanParseSingleString) {
    std::istringstream iss(str);
    auto parser = nbt::Parser(iss);
    auto stringTag = std::dynamic_pointer_cast<nbt::StringTag>(parser.parseTag());
+   ASSERT_NE(nullptr, stringTag);
    ASSERT_EQ("String", stringTag->value());
+}
+
+TEST(ParseTagTests, CanParseSingleCompoundTag) {
+   // Compound Tag with an Int and String Tag followed by an End Tag
+   const char binary[] = {
+      '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '.',
+      '\x01', '\x02', '\x03', '\x04', '\x08', '\x01', '\x00',   'S',
+      '\x05', '\x00',   'H',    'e',    'l',    'l',    'o',  '\x00'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto compoundTag = std::dynamic_pointer_cast<nbt::CompoundTag>(parser.parseTag());
+   ASSERT_NE(nullptr, compoundTag);
+   ASSERT_EQ(2, compoundTag->children.size());
+   ASSERT_EQ(nbt::TAG_INT, compoundTag->children[0]->type());
+   ASSERT_EQ(nbt::TAG_STRING, compoundTag->children[1]->type());
+}
+
+TEST(ParseTagTests, CanParseSingleNestedCompound) {
+   // Compound Tag with a Compound Tag with two Int Tags followed by End Tags
+   const char binary[] = {
+      '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x0A', '\x05', '\x00',   'N',    'E',    'S',    'T',    '.',
+      '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '1',
+      '\x01', '\x02', '\x03', '\x04',
+      '\x03', '\x05', '\x00',   '.',    'I',    'N',    'T',    '2',
+      '\x01', '\x02', '\x03', '\x04', '\x00', '\x00'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto compoundTag = std::dynamic_pointer_cast<nbt::CompoundTag>(parser.parseTag());
+   ASSERT_NE(nullptr, compoundTag);
+   ASSERT_EQ(1, compoundTag->children.size());
+   auto nestedCompoundTag = std::dynamic_pointer_cast<nbt::CompoundTag>(compoundTag->children[0]);
+   ASSERT_EQ(2, nestedCompoundTag->children.size());
+   ASSERT_EQ(".INT1", nestedCompoundTag->children[0]->name());
+   ASSERT_EQ(".INT2", nestedCompoundTag->children[1]->name());
+}
+
+TEST(ParseTagTests, CanParseSingleListOfBytes) {
+   // List tag of 3 Bytes
+   const char binary[] = {
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x01', '\x03', '\x00', '\x00', '\x00', '\x01', '\x02', '\x03',
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto listTag = std::dynamic_pointer_cast<nbt::ListTag>(parser.parseTag());
+   ASSERT_NE(nullptr, listTag);
+   ASSERT_EQ(3, listTag->children.size());
 }
