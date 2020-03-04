@@ -19,4 +19,5 @@ namespace nbt {
          std::shared_ptr<BaseTag> parseTag();
    };
 }
+
 #endif

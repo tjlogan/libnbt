@@ -1,3 +1,6 @@
+#ifndef PARSER_HELPER_H
+#define PARSER_HELPER_H
+
 #include <istream>
 #include <memory>
 
@@ -36,3 +39,5 @@ namespace nbt {
       }
    }
 }
+
+#endif
