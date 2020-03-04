@@ -96,14 +96,14 @@ namespace nbt {
       return collection;
    }
 
-   std::shared_ptr<BaseTag> Parser::readTag(TagType type) {
+   std::shared_ptr<BaseTag> Parser::readTag(TagType tagType) {
       std::string name;
       std::shared_ptr<BaseTag> tag;
 
-      if (type != TAG_END) {
+      if (tagType != TAG_END) {
          name = ParserHelper::read<std::string>(m_is);
       }
-      switch (type) {
+      switch (tagType) {
          case TAG_BYTE: {
             tag = ParserHelper::readTag<char, ByteTag>(m_is, name);
             break;
