@@ -400,3 +400,22 @@ TEST(ParseTagTests, CanParseSingleListOfBytes) {
    ASSERT_NE(nullptr, listTag);
    ASSERT_EQ(3, listTag->children.size());
 }
+
+TEST(ParseTagTests, CanParseSingleCompoundTagWithList) {
+   // Compound Tag with a List Tag with two Byte Tags followed by an End Tag
+   const char binary[] = {
+      '\x0A', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x01', '\x02', '\x00', '\x00', '\x00', '\x01', '\x02', '\x00',
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto compoundTag = std::dynamic_pointer_cast<nbt::CompoundTag>(parser.parseTag());
+   ASSERT_NE(nullptr, compoundTag);
+   ASSERT_EQ(1, compoundTag->children.size());
+   ASSERT_EQ(nbt::TAG_LIST, compoundTag->children[0]->type());
+   auto listTag = std::dynamic_pointer_cast<nbt::ListTag>(compoundTag->children[0]);
+   ASSERT_EQ(2, listTag->size());
+   ASSERT_EQ(nbt::TAG_BYTE, listTag->childType());
+}

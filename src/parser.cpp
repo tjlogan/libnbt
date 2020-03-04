@@ -199,6 +199,29 @@ namespace nbt {
                tag = compoundTag;
                break;
             }
+            case TAG_LIST: {
+               TagType childType = (TagType)ParserHelper::read<char>(m_is);
+               int size = ParserHelper::read<int>(m_is);
+               auto listTag = std::make_shared<ListTag>(name, childType);
+               std::shared_ptr<BaseTag> childTag;
+               for(int i = 0; i < size; i++) {
+                  switch (childType) {
+                     case TAG_BYTE: {
+                        childTag = ParserHelper::readTag<char, ByteTag>(m_is, "");
+                        break;
+                     }
+                     case TAG_INT: {
+                        childTag = ParserHelper::readTag<int, IntTag>(m_is, "");
+                        break;
+                     }
+                     default:
+                        std::cerr << "Unhandled child type encountered while parsing list: 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (int)childType) << "\n";
+                        break;
+                  }
+                  listTag->children.push_back(childTag);
+                  tag = listTag;
+               }
+            }
          }
          collection.push_back(tag);
          m_is.read(&tagBuffer, 1);
