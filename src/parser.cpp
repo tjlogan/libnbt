@@ -1,11 +1,12 @@
 #include <memory>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include "libnbt/parser.h"
 #include "libnbt/parser_helper.h"
 
 namespace nbt {
-   Parser::Parser(std::istream& is) : m_is(is) {};
+   Parser::Parser(std::istream& is) : m_is(is), error(false), errorMsg() {};
 
    std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
       char tagBuffer;
@@ -13,62 +14,17 @@ namespace nbt {
       std::vector<std::vector<std::shared_ptr<BaseTag>>*> tagStack;
       std::vector<std::shared_ptr<BaseTag>>* currentCollection = &m_root;
 
-      while(m_is.read(&tagBuffer, 1)) {
-         if (tagBuffer != TAG_END) {
-            name = ParserHelper::read<std::string>(m_is);
-         }
-         switch (tagBuffer) {
-         case TAG_BYTE: {
-            currentCollection->push_back(ParserHelper::readTag<char, ByteTag>(m_is, name));
+      while(isGood() && m_is.read(&tagBuffer, 1)) {
+         if (tagBuffer == TAG_END) {
+            error = true;
+            errorMsg = "Unpaired End tag encountered";
             break;
          }
-         case TAG_SHORT: {
-            currentCollection->push_back(ParserHelper::readTag<short, ShortTag>(m_is, name));
-            break;
-         }
-         case TAG_INT: {
-            currentCollection->push_back(ParserHelper::readTag<int, IntTag>(m_is, name));
-            break;
-         }
-         case TAG_LONG: {
-            currentCollection->push_back(ParserHelper::readTag<long, LongTag>(m_is, name));
-            break;
-         }
-         case TAG_FLOAT: {
-            currentCollection->push_back(ParserHelper::readTag<float, FloatTag>(m_is, name));
-            break;
-         }
-         case TAG_STRING: {
-            currentCollection->push_back(ParserHelper::readTag<std::string, StringTag>(m_is, name));
-            break;
-         }
-         case TAG_COMPOUND: {
-            std::shared_ptr<CompoundTag> compoundTag = std::make_shared<CompoundTag>(name);
-            currentCollection->push_back(compoundTag);
-            tagStack.push_back(currentCollection);
-            currentCollection = &(compoundTag->children);
-            break;
-         }
-         case TAG_LIST: {
-            currentCollection->push_back(readList(name));
-            break;
-         }
-         case TAG_END: {
-            if (!tagStack.empty()) {
-               currentCollection = tagStack.back();
-               tagStack.pop_back();
-            } else {
-               std::cerr << "Unpaired End tag encountered\n";
-            }
-            break;
-         }
-         default:
-            std::cerr << "Unknown tag encountered while parsing: 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (int)tagBuffer) << "\n";
-            goto end_loop;
-            break;
+         auto tag = readTag((TagType)tagBuffer);
+         if (tag != nullptr) {
+            m_root.push_back(tag);
          }
       }
-      end_loop:
       return m_root;
    };
 
@@ -138,6 +94,12 @@ namespace nbt {
             tag = readList(name);
             break;
          }
+         default: {
+            auto ss = std::stringstream();
+            error = true;
+            ss << "Unknown tag encountered while parsing: 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (int)tagType);
+            errorMsg = ss.str();
+         }
       }
       return tag;
    }
@@ -157,12 +119,28 @@ namespace nbt {
             childTag = ParserHelper::readTag<int, IntTag>(m_is, "");
             break;
          }
-         default:
-            std::cerr << "Unhandled child type encountered while parsing list: 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (int)childType) << "\n";
+         default: {
+            auto ss = std::stringstream();
+            error = true;
+            ss << "Unhandled child type encountered while parsing list: 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (int)childType);
+            errorMsg = ss.str();
             break;
+         }
          }
          listTag->children.push_back(childTag);
       }
       return listTag;
+   }
+
+   bool Parser::isError() {
+      return error;
+   }
+
+   bool Parser::isGood() {
+      return !isError();
+   }
+
+   std::string Parser::getErrorMessage() {
+      return errorMsg;
    }
 }

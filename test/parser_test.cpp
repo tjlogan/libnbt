@@ -235,19 +235,6 @@ TEST(ParseTests, CanParseFloatTagNegative) {
    ASSERT_EQ("FLOAT (Test.): -1.46602e+13", tags[0]->toString());
 }
 
-TEST(ParseTests, DoesNotCrashOnUnpairedEndTag) {
-   // Compound Tag immediately followed by two End Tags then another compound tag
-   const char binary[] = {
-      '\x0A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\x00',
-      '\x00', '\x0A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74',
-   };
-   std::string str(binary, sizeof(binary));
-   std::istringstream iss(str);
-   auto parser = nbt::Parser(iss);
-   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
-   ASSERT_EQ(2, tags.size());
-}
-
 TEST(ParseTagTests, CanParseSingleByteTag) {
    // Three Byte Tags
    const char binary[] = {
@@ -418,4 +405,63 @@ TEST(ParseTagTests, CanParseSingleCompoundTagWithList) {
    auto listTag = std::dynamic_pointer_cast<nbt::ListTag>(compoundTag->children[0]);
    ASSERT_EQ(2, listTag->size());
    ASSERT_EQ(nbt::TAG_BYTE, listTag->childType());
+}
+
+TEST(ParseErrorTests, NoErrorStateOnCreation){
+   const char binary[] = {
+      '\x01', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\xAA'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   ASSERT_EQ(false, parser.isError());
+   ASSERT_EQ(true, parser.isGood());
+   ASSERT_EQ(true, parser.getErrorMessage().empty());
+}
+
+TEST(ParseErrorTests, WillSetErrorStateOnUnpairedEndTag) {
+   // Compound Tag immediately followed by two End Tags then another compound tag
+   const char binary[] = {
+      '\x0A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\x00',
+      '\x00', '\x0A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74',
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(true, parser.isError());
+   ASSERT_EQ(false, parser.isGood());
+   ASSERT_EQ("Unpaired End tag encountered", parser.getErrorMessage());
+   ASSERT_EQ(1, tags.size());
+}
+
+TEST(ParseErrorTests, WillSetErrorStateOnUnknownTag) {
+   // Compound Tag, but the tag type is or'ed with 0x10;
+   const char binary[] = {
+      '\x1A', '\x04', '\x00', '\x54', '\x65', '\x73', '\x74', '\x00',
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(true, parser.isError());
+   ASSERT_EQ(false, parser.isGood());
+   ASSERT_EQ("Unknown tag encountered while parsing: 0x1a", parser.getErrorMessage());
+   ASSERT_EQ(0, tags.size());
+}
+
+TEST(ParseErrorTests, WillSetErrorStateOnUnsupportedListTag) {
+   // List tag of 1 Short
+   const char binary[] = {
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x02', '\x01', '\x00', '\x00', '\x00', '\x01', '\x02',
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(true, parser.isError());
+   ASSERT_EQ(false, parser.isGood());
+   ASSERT_EQ("Unhandled child type encountered while parsing list: 0x02", parser.getErrorMessage());
+   ASSERT_EQ(1, tags.size());
 }
