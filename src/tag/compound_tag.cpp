@@ -1,4 +1,5 @@
 #include <sstream>
+#include <iostream>
 #include "libnbt/tag/compound_tag.h"
 
 namespace nbt {

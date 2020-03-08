@@ -41,10 +41,10 @@ namespace nbt {
       char tagBuffer;
       std::string name;
       std::shared_ptr<BaseTag> tag;
-      std::vector<std::shared_ptr<BaseTag>> collection;
+      std::vector<std::shared_ptr<BaseTag>> collection = std::vector<std::shared_ptr<BaseTag>>();
 
       m_is.read(&tagBuffer, 1);
-      while(tagBuffer != TAG_END) {
+      while(isGood() && tagBuffer != TAG_END) {
          tag = readTag((TagType)tagBuffer);
          collection.push_back(tag);
          m_is.read(&tagBuffer, 1);
@@ -53,12 +53,12 @@ namespace nbt {
    }
 
    std::shared_ptr<BaseTag> Parser::readTag(TagType tagType) {
-      std::string name;
-      std::shared_ptr<BaseTag> tag;
+      std::string name = ParserHelper::read<std::string>(m_is);
+      return decodeTag(tagType, name);
+   }
 
-      if (tagType != TAG_END) {
-         name = ParserHelper::read<std::string>(m_is);
-      }
+   std::shared_ptr<BaseTag> Parser::decodeTag(TagType tagType, std::string name) {
+      std::shared_ptr<BaseTag> tag;
       switch (tagType) {
          case TAG_BYTE: {
             tag = ParserHelper::readTag<char, ByteTag>(m_is, name);
@@ -110,23 +110,7 @@ namespace nbt {
       auto listTag = std::make_shared<ListTag>(name, childType);
       std::shared_ptr<BaseTag> childTag;
       for(int i = 0; i < size; i++) {
-         switch (childType) {
-         case TAG_BYTE: {
-            childTag = ParserHelper::readTag<char, ByteTag>(m_is, "");
-            break;
-         }
-         case TAG_INT: {
-            childTag = ParserHelper::readTag<int, IntTag>(m_is, "");
-            break;
-         }
-         default: {
-            auto ss = std::stringstream();
-            error = true;
-            ss << "Unhandled child type encountered while parsing list: 0x" << std::setfill('0') << std::setw(2) << std::hex << (0xFF & (int)childType);
-            errorMsg = ss.str();
-            break;
-         }
-         }
+         childTag = decodeTag(childType, "");
          listTag->children.push_back(childTag);
       }
       return listTag;

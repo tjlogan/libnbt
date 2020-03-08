@@ -14,6 +14,7 @@ namespace nbt {
          std::vector<std::shared_ptr<BaseTag>> parseUntilEnd();
          std::shared_ptr<ListTag> readList(std::string name);
          std::shared_ptr<BaseTag> readTag(TagType type);
+         std::shared_ptr<BaseTag> decodeTag(TagType tagType, std::string name);
          bool error;
          std::string errorMsg;
 

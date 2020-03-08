@@ -205,6 +205,98 @@ TEST(ParseTests, CanParseListOfInts) {
    ASSERT_EQ("LIST (LIST.): [2]\nINT (): 100\nINT (): 200", tags[0]->toString());
 }
 
+TEST(ParseTests, CanParseListOfShorts) {
+   // List tag of 2 Shorts
+   const char binary[] = {
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x02', '\x02', '\x00', '\x00', '\x00', '\x64', '\x00', '\xC8',
+      '\x00', '\x00', '\x00'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("LIST (LIST.): [2]\nSHORT (): 100\nSHORT (): 200", tags[0]->toString());
+}
+
+TEST(ParseTests, CanParseListOfLongs) {
+   // List tag of 2 Longs
+   const char binary[] = {
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x04', '\x02', '\x00', '\x00', '\x00', '\x08', '\x07', '\x06',
+      '\x05', '\x04', '\x03', '\x02', '\x01', '\xC8', '\x00', '\x00',
+      '\x00', '\x00', '\x00', '\x00', '\x00'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("LIST (LIST.): [2]\nLONG (): 72623859790382856\nLONG (): 200", tags[0]->toString());
+}
+
+TEST(ParseTests, CanParseListOfFloats) {
+   // List tag of 2 Floats
+   const char binary[] = {
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x05', '\x02', '\x00', '\x00', '\x00', '\x55', '\x55', '\x55',
+      '\x55', '\x55', '\x55', '\x55', '\xD5'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("LIST (LIST.): [2]\nFLOAT (): 1.46602e+13\nFLOAT (): -1.46602e+13", tags[0]->toString());
+}
+
+TEST(ParseTests, CanParseListOfStrings) {
+   // List tag of 2 Strings
+   const char binary[] = {
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x08', '\x02', '\x00', '\x00', '\x00', '\x04', '\x00',  'S',
+        'T',    'R',    '1',  '\x04', '\x00',   's',    't',   'r',
+        '2'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("LIST (LIST.): [2]\nSTRING (): STR1\nSTRING (): str2", tags[0]->toString());
+}
+
+TEST(ParseTests, CanParseListOfCompounds) {
+   // List tag of 2 Empty Compound Tags
+   const char binary[] = {
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x0A', '\x02', '\x00', '\x00', '\x00', '\x00', '\x00',
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("LIST (LIST.): [2]\nCOMPOUND (): [0]\nCOMPOUND (): [0]", tags[0]->toString());
+}
+
+TEST(ParseTests, CanParseListOfLists) {
+   // List tag of 2 Lists of Byte with 1 Byte each
+   const char binary[] = {
+      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
+      '\x09', '\x02', '\x00', '\x00', '\x00', '\x01', '\x01', '\x00',
+      '\x00', '\x00', '\xAA', '\x01', '\x01', '\x00', '\x00', '\x00',
+      '\xBB'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("LIST (LIST.): [2]\nLIST (): [1]\nBYTE (): 0xaa\nLIST (): [1]\nBYTE (): 0xbb", tags[0]->toString());
+}
+
 TEST(ParseTests, CanParseFloatTag) {
    const char binary[] = {
       '\x05', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
@@ -448,20 +540,4 @@ TEST(ParseErrorTests, WillSetErrorStateOnUnknownTag) {
    ASSERT_EQ(false, parser.isGood());
    ASSERT_EQ("Unknown tag encountered while parsing: 0x1a", parser.getErrorMessage());
    ASSERT_EQ(0, tags.size());
-}
-
-TEST(ParseErrorTests, WillSetErrorStateOnUnsupportedListTag) {
-   // List tag of 1 Short
-   const char binary[] = {
-      '\x09', '\x05', '\x00',   'L',    'I',    'S',    'T',   '.',
-      '\x02', '\x01', '\x00', '\x00', '\x00', '\x01', '\x02',
-   };
-   std::string str(binary, sizeof(binary));
-   std::istringstream iss(str);
-   auto parser = nbt::Parser(iss);
-   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
-   ASSERT_EQ(true, parser.isError());
-   ASSERT_EQ(false, parser.isGood());
-   ASSERT_EQ("Unhandled child type encountered while parsing list: 0x02", parser.getErrorMessage());
-   ASSERT_EQ(1, tags.size());
 }
