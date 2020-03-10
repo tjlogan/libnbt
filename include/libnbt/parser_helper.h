@@ -37,6 +37,15 @@ namespace nbt {
          tag->setValue(value);
          return tag;
       }
+
+      template <typename T, class U>
+      std::shared_ptr<U> readArrayTag(std::istream& is, std::string name) {
+         int size = read<int>(is);
+         auto array = new T[size];
+         is.read(reinterpret_cast<char*>(array), size);
+         std::shared_ptr<U> tag = std::make_shared<U>(name, array, size);
+         return tag;
+      }
    }
 }
 

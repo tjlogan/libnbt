@@ -80,6 +80,10 @@ namespace nbt {
             tag = ParserHelper::readTag<float, FloatTag>(m_is, name);
             break;
          }
+         case TAG_BYTE_ARRAY: {
+            tag = ParserHelper::readArrayTag<char, ByteArrayTag>(m_is, name);
+            break;
+         }
          case TAG_STRING: {
             tag = ParserHelper::readTag<std::string, StringTag>(m_is, name);
             break;

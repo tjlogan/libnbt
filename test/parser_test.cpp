@@ -327,6 +327,33 @@ TEST(ParseTests, CanParseFloatTagNegative) {
    ASSERT_EQ("FLOAT (Test.): -1.46602e+13", tags[0]->toString());
 }
 
+TEST(ParseTests, CanParseEmptyByteArray) {
+   const char binary[] = {
+      '\x07', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x00', '\x00', '\x00', '\x00'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("BYTE_ARRAY (Test.): [0]", tags[0]->toString());
+}
+
+TEST(ParseTests, CanParseByteArray) {
+   // Byte array tag with 4 bytes
+   const char binary[] = {
+      '\x07', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x04', '\x00', '\x00', '\x00', '\x01', '\x02', '\x03', '\x04'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   std::vector<std::shared_ptr<nbt::BaseTag>> tags = parser.parse();
+   ASSERT_EQ(1, tags.size());
+   ASSERT_EQ("BYTE_ARRAY (Test.): [4]", tags[0]->toString());
+}
+
 TEST(ParseTagTests, CanParseSingleByteTag) {
    // Three Byte Tags
    const char binary[] = {
@@ -497,6 +524,34 @@ TEST(ParseTagTests, CanParseSingleCompoundTagWithList) {
    auto listTag = std::dynamic_pointer_cast<nbt::ListTag>(compoundTag->children[0]);
    ASSERT_EQ(2, listTag->size());
    ASSERT_EQ(nbt::TAG_BYTE, listTag->childType());
+}
+
+TEST(ParseTagTests, CanParseSingleEmptyByteArray) {
+   const char binary[] = {
+      '\x07', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x00', '\x00', '\x00', '\x00'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto byteArrayTag = std::dynamic_pointer_cast<nbt::ByteArrayTag>(parser.parseTag());
+   ASSERT_EQ(0, byteArrayTag->size());
+}
+
+TEST(ParseTagTests, CanParseSingleByteArray) {
+   // Byte array tag with 4 bytes
+   const char binary[] = {
+      '\x07', '\x05', '\x00', '\x54', '\x65', '\x73', '\x74', '\x2E',
+      '\x04', '\x00', '\x00', '\x00', '\x00', '\x01', '\x02', '\x03'
+   };
+   std::string str(binary, sizeof(binary));
+   std::istringstream iss(str);
+   auto parser = nbt::Parser(iss);
+   auto byteArrayTag = std::dynamic_pointer_cast<nbt::ByteArrayTag>(parser.parseTag());
+   ASSERT_EQ(4, byteArrayTag->size());
+   for(char i = 0; i < 4; i++) {
+      ASSERT_EQ(i, byteArrayTag->values()[i]);
+   }
 }
 
 TEST(ParseErrorTests, NoErrorStateOnCreation){
