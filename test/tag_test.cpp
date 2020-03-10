@@ -231,3 +231,32 @@ TEST(FloatTag, ToString_Negative) {
     tag.setValue(-3.140625);
     ASSERT_EQ("FLOAT (test): -3.14062", tag.toString());
 }
+
+TEST(ByteArrayTag, Type) {
+    nbt::BaseTag* tag = new nbt::ByteArrayTag("test", {}, 0);
+    ASSERT_EQ(nbt::TAG_BYTE_ARRAY, tag->type());
+}
+
+TEST(ByteArrayTag, Empty) {
+    auto tag = nbt::ByteArrayTag("test", {}, 0);
+    ASSERT_EQ(0, tag.size());
+    ASSERT_EQ(0, tag.values().size());
+}
+
+TEST(ByteArrayTag, Value) {
+    char array[] {1, 2, 3, 4, 5};
+    auto tag = nbt::ByteArrayTag("test", array, 5);
+    ASSERT_EQ(5, tag.size());
+    ASSERT_EQ(5, tag.values().size());
+
+    for (int i = 0; i < tag.values().size(); i++) {
+        ASSERT_EQ(array[i], tag.values()[i]) << "Values differ at index " << i;
+    }
+}
+
+TEST(ByteArrayTag, ToString) {
+    char array[] {1, 2, 3, 4, 5};
+    auto tag = nbt::ByteArrayTag("test", array, 5);
+
+    ASSERT_EQ("BYTE_ARRAY (test): [5]", tag.toString());
+}

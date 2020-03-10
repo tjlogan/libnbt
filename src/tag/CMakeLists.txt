@@ -15,4 +15,5 @@ target_sources(nbt
    ${CMAKE_CURRENT_LIST_DIR}/long_tag.cpp
    ${CMAKE_CURRENT_LIST_DIR}/list_tag.cpp
    ${CMAKE_CURRENT_LIST_DIR}/float_tag.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/byte_array_tag.cpp
 )

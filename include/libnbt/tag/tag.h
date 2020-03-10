@@ -10,5 +10,6 @@
 #include "compound_tag.h"
 #include "string_tag.h"
 #include "list_tag.h"
+#include "byte_array_tag.h"
 
 #endif
