@@ -1,5 +1,6 @@
-# VS Code
+# IDE
 .vscode
+.idea
 
 # CMake
 CMakeFiles
@@ -9,3 +10,8 @@ Makefile
 
 # Output
 build/
+cmake-build-*/
+
+#OS
+.DS_Store
+
