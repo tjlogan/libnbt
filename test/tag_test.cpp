@@ -17,6 +17,11 @@ TEST(ByteTag, Value) {
     ASSERT_EQ('x', tag.value());
 }
 
+TEST(ByteTag, GetTag) {
+    auto tag = nbt::ByteTag("test");
+    ASSERT_EQ(nullptr, tag.getTag("anything").get());
+}
+
 TEST(ByteTag, ToString) {
     auto tag = nbt::ByteTag("test");
     tag.setValue('x');
@@ -44,6 +49,11 @@ TEST(IntTag, Value_Negative) {
     auto tag = nbt::IntTag("test");
     tag.setValue(-1025);
     ASSERT_EQ(-1025, tag.value());
+}
+
+TEST(IntTag, GetTag) {
+    auto tag = nbt::IntTag("test");
+    ASSERT_EQ(nullptr, tag.getTag("anything").get());
 }
 
 TEST(IntTag, ToString) {
@@ -75,6 +85,11 @@ TEST(ShortTag, Value_Negative) {
     ASSERT_EQ(-1025, tag.value());
 }
 
+TEST(ShortTag, GetTag) {
+    auto tag = nbt::ShortTag("test");
+    ASSERT_EQ(nullptr, tag.getTag("anything").get());
+}
+
 TEST(ShortTag, ToString) {
     auto tag = nbt::ShortTag("test");
     tag.setValue(1025);
@@ -96,6 +111,11 @@ TEST(StringTag, Value) {
     auto tag = nbt::StringTag("test");
     tag.setValue("my string value");
     ASSERT_EQ("my string value", tag.value());
+}
+
+TEST(StringTag, GetTag) {
+    auto tag = nbt::StringTag("test");
+    ASSERT_EQ(nullptr, tag.getTag("anything").get());
 }
 
 TEST(StringTag, ToString) {
@@ -143,6 +163,40 @@ TEST(CompoundTag, WithNestedCompoundTags) {
     ASSERT_EQ("COMPOUND (test): [1]\nCOMPOUND (nested): [1]\nBYTE (byte): 0x61", tag.toString());
 }
 
+TEST(CompoundTag, GetTagWithMultipleChildren) {
+    auto tag = nbt::CompoundTag("test");
+    auto byteTag = std::make_shared<nbt::ByteTag>("byte");
+    byteTag->setValue('a');
+    auto intTag = std::make_shared<nbt::IntTag>("int");
+    intTag->setValue(1);
+    tag.children.push_back(byteTag);
+    tag.children.push_back(intTag);
+
+    auto retrievedTag = (nbt::IntTag*)(tag.getTag("int").get());
+    ASSERT_EQ(retrievedTag->value(), 1);
+}
+
+TEST(CompoundTag, GetTagWithNestedCompoundTags) {
+    auto tag = nbt::CompoundTag("test");
+    auto nestedTag = std::make_shared<nbt::CompoundTag>("nested");
+    auto byteTag = std::make_shared<nbt::ByteTag>("byte");
+    byteTag->setValue('a');
+    nestedTag->children.push_back(byteTag);
+    tag.children.push_back(nestedTag);
+
+    auto retrievedTag = (nbt::ByteTag*)(tag.getTag("nested")->getTag("byte").get());
+    ASSERT_EQ(retrievedTag->value(), 'a');
+}
+
+TEST(CompoundTag, GetTagNotFound) {
+    auto tag = nbt::CompoundTag("test");
+    auto byteTag = std::make_shared<nbt::ByteTag>("byte");
+    tag.children.push_back(byteTag);
+
+    auto retrievedTag = (nbt::ByteTag*)(tag.getTag("not byte").get());
+    ASSERT_EQ(retrievedTag, nullptr);
+}
+
 TEST(LongTag, Type) {
     nbt::BaseTag* tag = new nbt::LongTag("test");
     ASSERT_EQ(nbt::TAG_LONG, tag->type());
@@ -158,6 +212,11 @@ TEST(LongTag, Value_Negative) {
     auto tag = nbt::LongTag("test");
     tag.setValue(-4147483647);
     ASSERT_EQ(-4147483647, tag.value());
+}
+
+TEST(LongTag, GetTag) {
+    auto tag = nbt::LongTag("test");
+    ASSERT_EQ(nullptr, tag.getTag("anything").get());
 }
 
 TEST(LongTag, ToString) {
@@ -203,6 +262,29 @@ TEST(ListTag, WithInts) {
     ASSERT_EQ("LIST (test): [1]\nINT (): 1000", tag.toString());
 }
 
+TEST(ListTag, GetTag) {
+    auto tag = nbt::ListTag("test", nbt::TAG_INT);
+    auto intTag = std::make_shared<nbt::IntTag>("int1");
+    intTag->setValue(1000);
+    tag.children.push_back(intTag);
+    auto intTag2 = std::make_shared<nbt::IntTag>("int2");
+    intTag2->setValue(2000);
+    tag.children.push_back(intTag2);
+
+    auto retrievedTag = (nbt::IntTag*)(tag.getTag("int2").get());
+    ASSERT_EQ(retrievedTag->value(), 2000);
+}
+
+TEST(ListTag, GetTagNotFound) {
+    auto tag = nbt::ListTag("test", nbt::TAG_INT);
+    auto intTag = std::make_shared<nbt::IntTag>("int1");
+    intTag->setValue(1000);
+    tag.children.push_back(intTag);
+
+    auto retrievedTag = (nbt::IntTag*)(tag.getTag("int2").get());
+    ASSERT_EQ(retrievedTag, nullptr);
+}
+
 TEST(FloatTag, Type) {
     nbt::BaseTag* tag = new nbt::FloatTag("test");
     ASSERT_EQ(nbt::TAG_FLOAT, tag->type());
@@ -218,6 +300,11 @@ TEST(FloatTag, Value_Negative) {
     auto tag = nbt::FloatTag("test");
     tag.setValue(-3.140625);
     ASSERT_EQ(-3.140625, tag.value());
+}
+
+TEST(FloatTag, GetTag) {
+    auto tag = nbt::FloatTag("test");
+    ASSERT_EQ(nullptr, tag.getTag("anything").get());
 }
 
 TEST(FloatTag, ToString) {
@@ -252,6 +339,12 @@ TEST(ByteArrayTag, Value) {
     for (int i = 0; i < tag.values().size(); i++) {
         ASSERT_EQ(array[i], tag.values()[i]) << "Values differ at index " << i;
     }
+}
+
+TEST(ByteArrayTag, GetTag) {
+    char array[] {1, 2, 3, 4, 5};
+    auto tag = nbt::ByteArrayTag("test", array, 5);
+    ASSERT_EQ(nullptr, tag.getTag("anything").get());
 }
 
 TEST(ByteArrayTag, ToString) {

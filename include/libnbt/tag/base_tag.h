@@ -1,6 +1,8 @@
 #ifndef BASE_TAG_H
 #define BASE_TAG_H
 
+#include <memory>
+
 namespace nbt {
    enum TagType {
       TAG_END = 0x00,
@@ -24,6 +26,9 @@ namespace nbt {
       public:
          std::string name();
          TagType type();
+         // Given a name, returns the first tag found with a matching name.
+         // Returns nullptr if the name was not found.
+         virtual std::shared_ptr<BaseTag> getTag(std::string name);
          virtual std::string toString() = 0;
    };
 }

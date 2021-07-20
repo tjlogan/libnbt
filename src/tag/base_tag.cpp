@@ -11,4 +11,8 @@ namespace nbt {
    TagType BaseTag::type() {
       return m_type;
    }
+
+   std::shared_ptr<BaseTag> BaseTag::getTag(std::string) {
+      return std::shared_ptr<BaseTag>();
+   }
 }

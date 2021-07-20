@@ -13,6 +13,7 @@ namespace nbt {
 
          CompoundTag(std::string name);
          std::string toString();
+         std::shared_ptr<BaseTag> getTag(std::string name);
    };
 }
 

@@ -22,4 +22,13 @@ namespace nbt {
       }
       return ss.str();
    }
+
+   std::shared_ptr<BaseTag> ListTag::getTag(std::string name) {
+      for(auto el: children) {
+         if (el->name() == name) {
+            return el;
+         }
+      }
+      return nullptr;
+   }
 }

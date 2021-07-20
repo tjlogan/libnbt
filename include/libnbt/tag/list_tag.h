@@ -18,6 +18,7 @@ namespace nbt {
          TagType childType();
          int size();
          std::string toString();
+         std::shared_ptr<BaseTag> getTag(std::string name);
    };
 }
 
