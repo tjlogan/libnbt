@@ -5,6 +5,39 @@ TEST(BaseTag, Name) {
     nbt::BaseTag* tag = new nbt::ByteTag("test");
     ASSERT_EQ("test", tag->name());
 }
+
+TEST(BaseTag, GetTagTemplate) {
+    auto compoundTag = new nbt::CompoundTag("test");
+    auto childTag = new nbt::ByteTag("child");
+    childTag->setValue(10);
+    compoundTag->children.push_back(std::shared_ptr<nbt::ByteTag>(childTag));
+    nbt::BaseTag* tag = compoundTag;
+
+    auto byteTag = tag->getTag<nbt::ByteTag>("child");
+    ASSERT_EQ(10, byteTag->value());
+}
+
+TEST(BaseTag, GetTagTemplateNotFound) {
+    auto compoundTag = new nbt::CompoundTag("test");
+    auto childTag = new nbt::ByteTag("child");
+    childTag->setValue(10);
+    compoundTag->children.push_back(std::shared_ptr<nbt::ByteTag>(childTag));
+    nbt::BaseTag* tag = compoundTag;
+
+    auto byteTag = tag->getTag<nbt::ByteTag>("not found");
+    ASSERT_EQ(nullptr, byteTag);
+}
+
+TEST(BaseTag, GetTagTemplateWrongClass) {
+    auto compoundTag = new nbt::CompoundTag("test");
+    auto childTag = new nbt::ByteTag("child");
+    childTag->setValue(10);
+    compoundTag->children.push_back(std::shared_ptr<nbt::ByteTag>(childTag));
+    nbt::BaseTag* tag = compoundTag;
+
+    auto byteTag = tag->getTag<nbt::IntTag>("child");
+    ASSERT_EQ(nullptr, byteTag);
+}
  
 TEST(ByteTag, Type) {
     nbt::BaseTag* tag = new nbt::ByteTag("test");
