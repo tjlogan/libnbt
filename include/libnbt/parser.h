@@ -19,11 +19,11 @@ namespace nbt {
          std::string errorMsg;
 
       public:
-         Parser(std::istream& is);
+         explicit Parser(std::istream& is);
          std::vector<std::shared_ptr<BaseTag>> parse();
          std::shared_ptr<BaseTag> parseTag();
-         bool isGood();
-         bool isError();
+         bool isGood() const;
+         bool isError() const;
          std::string getErrorMessage();
    };
 }

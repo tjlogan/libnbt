@@ -6,7 +6,7 @@ namespace nbt {
       m_values = std::vector<char>(values, values + size);
    }
 
-   const std::vector<char> ByteArrayTag::values() {
+   std::vector<char> ByteArrayTag::values() const {
       return m_values;
    }
 

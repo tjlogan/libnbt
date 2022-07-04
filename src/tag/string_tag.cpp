@@ -6,7 +6,7 @@ namespace nbt {
    void StringTag::setValue(std::string value) {
       m_value = value;
    }
-   std::string StringTag::value() {
+   std::string StringTag::value() const {
       return m_value;
    }
    std::string StringTag::toString() {

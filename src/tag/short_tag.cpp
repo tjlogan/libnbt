@@ -6,7 +6,7 @@ namespace nbt {
    void ShortTag::setValue(short value) {
       m_value = value;
    }
-   short ShortTag::value() {
+   short ShortTag::value() const {
       return m_value;
    }
    std::string ShortTag::toString() {

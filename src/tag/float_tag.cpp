@@ -6,7 +6,7 @@ namespace nbt {
    void FloatTag::setValue(float value) {
       m_value = value;
    }
-   float FloatTag::value() {
+   float FloatTag::value() const {
       return m_value;
    }
    std::string FloatTag::toString() {

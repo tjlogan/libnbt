@@ -15,7 +15,7 @@ namespace nbt {
                   reinterpret_cast<const char*>(&valueBuffer[sizeof(T)]),
                   reinterpret_cast<char*>(&result));
          return result;
-      };
+      }
 
       template <>
       std::string read(std::istream& is) {

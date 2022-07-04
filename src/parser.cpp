@@ -6,7 +6,7 @@
 #include "libnbt/parser_helper.h"
 
 namespace nbt {
-   Parser::Parser(std::istream& is) : m_is(is), error(false), errorMsg() {};
+   Parser::Parser(std::istream& is) : m_is(is), error(false), errorMsg() {}
 
    std::vector<std::shared_ptr<BaseTag>> Parser::parse() {
       char tagBuffer;
@@ -26,7 +26,7 @@ namespace nbt {
          }
       }
       return m_root;
-   };
+   }
 
    std::shared_ptr<BaseTag> Parser::parseTag() {
       char tagBuffer;
@@ -109,8 +109,8 @@ namespace nbt {
    }
 
    std::shared_ptr<ListTag> Parser::readList(std::string name) {
-      TagType childType = (TagType)ParserHelper::read<char>(m_is);
-      int size = ParserHelper::read<int>(m_is);
+      auto childType = (TagType)ParserHelper::read<char>(m_is);
+      auto size = ParserHelper::read<int>(m_is);
       auto listTag = std::make_shared<ListTag>(name, childType);
       std::shared_ptr<BaseTag> childTag;
       for(int i = 0; i < size; i++) {
@@ -120,11 +120,11 @@ namespace nbt {
       return listTag;
    }
 
-   bool Parser::isError() {
+   bool Parser::isError() const {
       return error;
    }
 
-   bool Parser::isGood() {
+   bool Parser::isGood() const {
       return !isError();
    }
 

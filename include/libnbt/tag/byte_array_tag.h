@@ -12,9 +12,9 @@ namespace nbt {
 
       public:
          ByteArrayTag(std::string name, char values[], int size);
-         const std::vector<char> values();
+         std::vector<char> values() const;
          int size();
-         std::string toString();
+         std::string toString() override;
    };
 }
 

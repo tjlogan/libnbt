@@ -11,9 +11,9 @@ namespace nbt {
       public:
          std::vector<std::shared_ptr<BaseTag>> children;
 
-         CompoundTag(std::string name);
-         std::string toString();
-         std::shared_ptr<BaseTag> getTag(std::string name);
+         explicit CompoundTag(std::string name);
+         std::string toString() override;
+         std::shared_ptr<BaseTag> getTag(std::string name) override;
    };
 }
 

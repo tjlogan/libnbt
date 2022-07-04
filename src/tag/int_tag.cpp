@@ -6,7 +6,7 @@ namespace nbt {
    void IntTag::setValue(int value) {
       m_value = value;
    }
-   int IntTag::value() {
+   int IntTag::value() const {
       return m_value;
    }
    std::string IntTag::toString() {

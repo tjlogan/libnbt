@@ -10,10 +10,10 @@ namespace nbt {
          long m_value;
       
       public:
-         LongTag(std::string name);
-         long value();
+         explicit LongTag(std::string name);
+         long value() const;
          void setValue(long value);
-         std::string toString();
+         std::string toString() override;
    };
 }
 

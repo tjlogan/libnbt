@@ -6,7 +6,7 @@ namespace nbt {
    void LongTag::setValue(long value) {
       m_value = value;
    }
-   long LongTag::value() {
+   long LongTag::value() const {
       return m_value;
    }
    std::string LongTag::toString() {

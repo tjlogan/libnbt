@@ -7,7 +7,7 @@ namespace nbt {
    void ByteTag::setValue(char value) {
       m_value = value;
    }
-   char ByteTag::value() {
+   char ByteTag::value() const {
       return m_value;
    }
    std::string ByteTag::toString() {

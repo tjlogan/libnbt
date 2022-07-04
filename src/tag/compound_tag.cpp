@@ -8,7 +8,7 @@ namespace nbt {
    std::string CompoundTag::toString() {
       std::stringstream ss;
       ss << "COMPOUND (" << m_name << "): [" << children.size() << "]";
-      for (auto x: children) {
+      for (const auto& x: children) {
          ss << "\n" << x->toString();
       }
       return ss.str();

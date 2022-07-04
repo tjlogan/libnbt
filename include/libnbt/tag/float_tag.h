@@ -10,10 +10,10 @@ namespace nbt {
          float m_value;
       
       public:
-         FloatTag(std::string name);
-         float value();
+         explicit FloatTag(std::string name);
+         float value() const;
          void setValue(float value);
-         std::string toString();
+         std::string toString() override;
    };
 }
 

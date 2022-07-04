@@ -10,10 +10,10 @@ namespace nbt {
          short m_value;
       
       public:
-         ShortTag(std::string name);
-         short value();
+         explicit ShortTag(std::string name);
+         short value() const;
          void setValue(short value);
-         std::string toString();
+         std::string toString() override;
    };
 }
 

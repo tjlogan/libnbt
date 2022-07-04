@@ -10,10 +10,10 @@ namespace nbt {
          char m_value;
       
       public:
-         ByteTag(std::string name);
-         char value();
+         explicit ByteTag(std::string name);
+         char value() const;
          void setValue(char value);
-         std::string toString();
+         std::string toString() override;
    };
 }
 

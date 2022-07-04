@@ -17,8 +17,8 @@ namespace nbt {
          ListTag(std::string name, TagType childType);
          TagType childType();
          int size();
-         std::string toString();
-         std::shared_ptr<BaseTag> getTag(std::string name);
+         std::string toString() override;
+         std::shared_ptr<BaseTag> getTag(std::string name) override;
    };
 }
 

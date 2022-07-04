@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cert-err58-cpp"
 #include <gtest/gtest.h>
 #include "libnbt/tag/tag.h"
 
@@ -386,3 +388,5 @@ TEST(ByteArrayTag, ToString) {
 
     ASSERT_EQ("BYTE_ARRAY (test): [5]", tag.toString());
 }
+
+#pragma clang diagnostic pop

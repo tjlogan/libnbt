@@ -10,10 +10,10 @@ namespace nbt {
          std::string m_value;
       
       public:
-         StringTag(std::string name);
-         std::string value();
+         explicit StringTag(std::string name);
+         std::string value() const;
          void setValue(std::string value);
-         std::string toString();
+         std::string toString() override;
    };
 }
 
