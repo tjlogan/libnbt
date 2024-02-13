@@ -29,16 +29,26 @@ namespace nbt {
          // Given a name, returns a shared pointer to the first tag found with a matching name.
          // Returns a shared null pointer if the name was not found.
          virtual std::shared_ptr<BaseTag> getTag(std::string name);
-         // Given a name, returns the a pointer to the first tag found with a matching name as the type T.
-         // Returns nullptr if the name was not found or it wasn't able to cast to type T.
-         template <typename T>
+         // Given a name, returns a pointer to the first tag found with a matching name as the type T.
+         // Returns nullptr if the name was not found, or it wasn't able to cast to type T.
+         template<typename T>
          T* getTag(std::string name);
+         // Given a name, returns the value of the first tag found with a matching name.
+         // If the name is not found, or it wasn't able to cast to type T, then defaultValue is returned.
+         template<typename T, typename S>
+         S getValueOrDefault(std::string name, S defaultValue);
          virtual std::string toString() = 0;
    };
 
-   template <typename T>
+   template<typename T>
    T* BaseTag::getTag(std::string name) {
       return dynamic_cast<T*>(this->getTag(name).get());
+   }
+
+   template<typename T, typename S>
+   S BaseTag::getValueOrDefault(std::string name, S defaultValue) {
+      auto tag = this->getTag<T>(name);
+      return tag != nullptr ? tag->value() : defaultValue;
    }
 }
 

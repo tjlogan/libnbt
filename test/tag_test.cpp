@@ -8,7 +8,7 @@ TEST(BaseTag, Name) {
     ASSERT_EQ("test", tag->name());
 }
 
-TEST(BaseTag, GetTagTemplate) {
+TEST(BaseTag, GetTag) {
     auto compoundTag = new nbt::CompoundTag("test");
     auto childTag = new nbt::ByteTag("child");
     childTag->setValue(10);
@@ -19,7 +19,7 @@ TEST(BaseTag, GetTagTemplate) {
     ASSERT_EQ(10, byteTag->value());
 }
 
-TEST(BaseTag, GetTagTemplateNotFound) {
+TEST(BaseTag, GetTag_NotFound) {
     auto compoundTag = new nbt::CompoundTag("test");
     auto childTag = new nbt::ByteTag("child");
     childTag->setValue(10);
@@ -30,7 +30,7 @@ TEST(BaseTag, GetTagTemplateNotFound) {
     ASSERT_EQ(nullptr, byteTag);
 }
 
-TEST(BaseTag, GetTagTemplateWrongClass) {
+TEST(BaseTag, GetTag_WrongClass) {
     auto compoundTag = new nbt::CompoundTag("test");
     auto childTag = new nbt::ByteTag("child");
     childTag->setValue(10);
@@ -39,6 +39,39 @@ TEST(BaseTag, GetTagTemplateWrongClass) {
 
     auto byteTag = tag->getTag<nbt::IntTag>("child");
     ASSERT_EQ(nullptr, byteTag);
+}
+
+TEST(BaseTag, GetValueOrDefault) {
+   auto compoundTag = new nbt::CompoundTag("test");
+   auto childTag = new nbt::ByteTag("child");
+   childTag->setValue(10);
+   compoundTag->children.push_back(std::shared_ptr<nbt::ByteTag>(childTag));
+   nbt::BaseTag* tag = compoundTag;
+
+   auto byte = tag->getValueOrDefault<nbt::ByteTag>("child", 42);
+   ASSERT_EQ(byte, 10);
+}
+
+TEST(BaseTag, GetValueOrDefault_NameNotFound) {
+   auto compoundTag = new nbt::CompoundTag("test");
+   auto childTag = new nbt::ByteTag("child");
+   childTag->setValue(10);
+   compoundTag->children.push_back(std::shared_ptr<nbt::ByteTag>(childTag));
+   nbt::BaseTag* tag = compoundTag;
+
+   auto byte = tag->getValueOrDefault<nbt::ByteTag>("not-found", 42);
+   ASSERT_EQ(byte, 42);
+}
+
+TEST(BaseTag, GetValueOrDefault_WrongClass) {
+   auto compoundTag = new nbt::CompoundTag("test");
+   auto childTag = new nbt::ByteTag("child");
+   childTag->setValue(10);
+   compoundTag->children.push_back(std::shared_ptr<nbt::ByteTag>(childTag));
+   nbt::BaseTag* tag = compoundTag;
+
+   auto byte = tag->getValueOrDefault<nbt::IntTag>("not-found", 42);
+   ASSERT_EQ(byte, 42);
 }
  
 TEST(ByteTag, Type) {
