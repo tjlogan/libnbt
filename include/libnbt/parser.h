@@ -12,9 +12,9 @@ namespace nbt {
          std::istream& m_is;
          std::vector<std::shared_ptr<BaseTag>> m_root;
          std::vector<std::shared_ptr<BaseTag>> parseUntilEnd();
-         std::shared_ptr<ListTag> readList(std::string name);
+         std::shared_ptr<ListTag> readList(const std::string& name);
          std::shared_ptr<BaseTag> readTag(TagType type);
-         std::shared_ptr<BaseTag> decodeTag(TagType tagType, std::string name);
+         std::shared_ptr<BaseTag> decodeTag(TagType tagType, const std::string& name);
          bool error;
          std::string errorMsg;
 

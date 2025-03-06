@@ -24,7 +24,7 @@ int main() {
 
    char* buffer = new char[8];
    fin.read(buffer, 8);
-   struct Header* header = (Header*)buffer;
+   auto* header = (Header*)buffer;
 
    nbt::Parser parser = nbt::Parser(fin);
    std::cout << "Version: " << header->version << "\n";

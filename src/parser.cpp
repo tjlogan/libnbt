@@ -1,7 +1,6 @@
 #include <memory>
 #include <iostream>
 #include <iomanip>
-#include <sstream>
 #include "libnbt/parser.h"
 #include "libnbt/parser_helper.h"
 
@@ -57,7 +56,7 @@ namespace nbt {
       return decodeTag(tagType, name);
    }
 
-   std::shared_ptr<BaseTag> Parser::decodeTag(TagType tagType, std::string name) {
+   std::shared_ptr<BaseTag> Parser::decodeTag(TagType tagType, const std::string& name) {
       std::shared_ptr<BaseTag> tag;
       switch (tagType) {
          case TAG_BYTE: {
@@ -108,7 +107,7 @@ namespace nbt {
       return tag;
    }
 
-   std::shared_ptr<ListTag> Parser::readList(std::string name) {
+   std::shared_ptr<ListTag> Parser::readList(const std::string& name) {
       auto childType = (TagType)ParserHelper::read<char>(m_is);
       auto size = ParserHelper::read<int>(m_is);
       auto listTag = std::make_shared<ListTag>(name, childType);
